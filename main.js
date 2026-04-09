@@ -775,6 +775,161 @@ initChallengePage();
 /* ── INTEREST FINDER QUIZ ── */
 const answers = {};
 
+const QUIZ_TOPICS = {
+  performance: {
+    label: 'Performance & fitness',
+    questions: [
+      {
+        key: 'q1',
+        q: 'Where do you feel most alive?',
+        hint: 'Pick the environment that lights you up',
+        options: [
+          { icon: '🏋️', text: 'During hard training and physical challenge', val: 'athlete' },
+          { icon: '🧩', text: 'While solving technical or strategic problems', val: 'builder' },
+          { icon: '🎨', text: 'When creating original moves, routines, or style', val: 'creator' },
+          { icon: '🤝', text: 'When helping teammates level up together', val: 'connector' }
+        ]
+      },
+      {
+        key: 'q2',
+        q: 'What kind of rep feels the most rewarding?',
+        hint: 'Think about what you would repeat daily',
+        options: [
+          { icon: '🥇', text: 'Tracking numbers and beating personal bests', val: 'athlete' },
+          { icon: '📊', text: 'Systemizing routines and optimizing progress', val: 'builder' },
+          { icon: '🎬', text: 'Experimenting with style and expression', val: 'creator' },
+          { icon: '👏', text: 'Motivating others to keep showing up', val: 'connector' }
+        ]
+      },
+      {
+        key: 'q3',
+        q: 'What win would make you proud this season?',
+        hint: 'Choose the outcome you care about most',
+        options: [
+          { icon: '🏆', text: 'Compete and perform at a higher level', val: 'athlete' },
+          { icon: '🛠', text: 'Build a strong training system that works', val: 'builder' },
+          { icon: '🔥', text: 'Develop a unique style and signature', val: 'creator' },
+          { icon: '🤝', text: 'Inspire your group to become more disciplined', val: 'connector' }
+        ]
+      }
+    ]
+  },
+  career: {
+    label: 'Career & business',
+    questions: [
+      {
+        key: 'q1',
+        q: 'What challenge excites you most at work?',
+        hint: 'Choose the one you naturally move toward',
+        options: [
+          { icon: '🚀', text: 'Hitting ambitious targets under pressure', val: 'athlete' },
+          { icon: '🧠', text: 'Building systems, products, or operations', val: 'builder' },
+          { icon: '🎯', text: 'Crafting ideas that stand out from noise', val: 'creator' },
+          { icon: '🤝', text: 'Leading people and improving team culture', val: 'connector' }
+        ]
+      },
+      {
+        key: 'q2',
+        q: 'When you have free time, what do you improve first?',
+        hint: 'Your default focus says a lot',
+        options: [
+          { icon: '⏱', text: 'Execution speed and consistency', val: 'athlete' },
+          { icon: '🧱', text: 'Process quality and long-term leverage', val: 'builder' },
+          { icon: '💡', text: 'Storytelling, brand, and original thinking', val: 'creator' },
+          { icon: '🗣', text: 'Communication, influence, and mentoring', val: 'connector' }
+        ]
+      },
+      {
+        key: 'q3',
+        q: 'Which career result feels most meaningful?',
+        hint: 'Pick the impact you want to leave',
+        options: [
+          { icon: '🏅', text: 'Be known for elite performance', val: 'athlete' },
+          { icon: '🏗', text: 'Ship work that scales beyond you', val: 'builder' },
+          { icon: '✨', text: 'Create bold ideas people remember', val: 'creator' },
+          { icon: '🌍', text: 'Grow people and make teams stronger', val: 'connector' }
+        ]
+      }
+    ]
+  },
+  creativity: {
+    label: 'Creativity & expression',
+    questions: [
+      {
+        key: 'q1',
+        q: 'What kind of creative work pulls you in?',
+        hint: 'Follow what feels effortless',
+        options: [
+          { icon: '🥊', text: 'Performance-heavy craft with discipline', val: 'athlete' },
+          { icon: '🧰', text: 'Design systems and technical craft', val: 'builder' },
+          { icon: '🎨', text: 'Pure artistic expression and originality', val: 'creator' },
+          { icon: '🎤', text: 'Collaborative storytelling with people', val: 'connector' }
+        ]
+      },
+      {
+        key: 'q2',
+        q: 'How do you usually turn ideas into output?',
+        hint: 'Pick your natural making style',
+        options: [
+          { icon: '📆', text: 'By strict routine and daily reps', val: 'athlete' },
+          { icon: '🧩', text: 'By building frameworks and structure', val: 'builder' },
+          { icon: '🌈', text: 'By experimenting and following instinct', val: 'creator' },
+          { icon: '🫶', text: 'By co-creating with feedback from others', val: 'connector' }
+        ]
+      },
+      {
+        key: 'q3',
+        q: 'What result would feel like your breakthrough?',
+        hint: 'Choose the one that gives you chills',
+        options: [
+          { icon: '🏁', text: 'Completing a demanding body-of-work challenge', val: 'athlete' },
+          { icon: '🛠', text: 'Shipping a repeatable creative system', val: 'builder' },
+          { icon: '🌟', text: 'Publishing work that feels fully yours', val: 'creator' },
+          { icon: '💬', text: 'Touching lives through your message', val: 'connector' }
+        ]
+      }
+    ]
+  },
+  leadership: {
+    label: 'Leadership & impact',
+    questions: [
+      {
+        key: 'q1',
+        q: 'What leadership moment motivates you most?',
+        hint: 'Pick the one you want more of',
+        options: [
+          { icon: '⚔️', text: 'Stepping up in high-pressure moments', val: 'athlete' },
+          { icon: '🗺', text: 'Designing better systems for the team', val: 'builder' },
+          { icon: '🎤', text: 'Casting vision that moves people', val: 'creator' },
+          { icon: '🤲', text: 'Helping others grow with care and trust', val: 'connector' }
+        ]
+      },
+      {
+        key: 'q2',
+        q: 'What do people thank you for most often?',
+        hint: 'Use real feedback from your circle',
+        options: [
+          { icon: '🔥', text: 'Your drive, discipline, and standards', val: 'athlete' },
+          { icon: '🧱', text: 'Your clarity and dependable systems', val: 'builder' },
+          { icon: '💫', text: 'Your original ideas and inspiration', val: 'creator' },
+          { icon: '❤️', text: 'Your empathy and support', val: 'connector' }
+        ]
+      },
+      {
+        key: 'q3',
+        q: 'What impact do you want to be remembered for?',
+        hint: 'Choose your long-game outcome',
+        options: [
+          { icon: '🏆', text: 'Building a culture of elite execution', val: 'athlete' },
+          { icon: '🏗', text: 'Leaving systems that outlast you', val: 'builder' },
+          { icon: '🕯', text: 'Igniting vision and belief in others', val: 'creator' },
+          { icon: '🌱', text: 'Raising people who thrive because of you', val: 'connector' }
+        ]
+      }
+    ]
+  }
+};
+
 function selectOpt(el, key, val) {
   el.closest('.quiz-options')
     .querySelectorAll('.quiz-opt')
@@ -784,7 +939,45 @@ function selectOpt(el, key, val) {
   saveQuizState();
 }
 
+function selectQuizTopic(el, topic) {
+  el.closest('.quiz-options')
+    .querySelectorAll('.quiz-opt')
+    .forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  answers.topic = topic;
+  delete answers.q1;
+  delete answers.q2;
+  delete answers.q3;
+  renderQuizForTopic(topic);
+  saveQuizState();
+}
+
+function renderQuizForTopic(topic) {
+  const activeTopic = QUIZ_TOPICS[topic] ? topic : 'performance';
+  const topicConfig = QUIZ_TOPICS[activeTopic];
+  topicConfig.questions.forEach((question, idx) => {
+    const stepEl = document.getElementById(`step${idx + 1}`);
+    if (!stepEl) return;
+    const qEl = stepEl.querySelector('.quiz-q');
+    const hintEl = stepEl.querySelector('.quiz-hint');
+    const optionsEl = stepEl.querySelector('.quiz-options');
+    if (!qEl || !hintEl || !optionsEl) return;
+
+    qEl.textContent = question.q;
+    hintEl.textContent = question.hint;
+    optionsEl.innerHTML = question.options
+      .map(opt => (
+        `<div class="quiz-opt" onclick="selectOpt(this,'${question.key}','${opt.val}')">` +
+        `<span class="quiz-opt-icon">${opt.icon}</span> ${opt.text}</div>`
+      ))
+      .join('');
+  });
+}
+
 function nextStep(n) {
+  const activeStep = getActiveQuizStepNumber();
+  if (activeStep === 0 && !answers.topic) return;
+  if (activeStep >= 1 && activeStep <= 3 && !answers[`q${activeStep}`]) return;
   document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
   const next = document.getElementById('step' + n);
   if (next) next.classList.add('active');
@@ -821,10 +1014,12 @@ const PATHS = {
 
 /* ── QUIZ PERSISTENCE ── */
 function parseQuizOptOnclick(el) {
-  // Example: selectOpt(this,'energy','body')
+  // Example: selectOpt(this,'q1','athlete') or selectQuizTopic(this,'career')
   const attr = el.getAttribute('onclick') || '';
-  const m = attr.match(/selectOpt\(this,'([^']+)','([^']+)'\)/);
-  return m ? { key: m[1], val: m[2] } : null;
+  const topicMatch = attr.match(/selectQuizTopic\(this,'([^']+)'\)/);
+  if (topicMatch) return { key: 'topic', val: topicMatch[1] };
+  const answerMatch = attr.match(/selectOpt\(this,'([^']+)','([^']+)'\)/);
+  return answerMatch ? { key: answerMatch[1], val: answerMatch[2] } : null;
 }
 
 function restoreQuizSelections() {
@@ -839,9 +1034,9 @@ function restoreQuizSelections() {
 
 function getActiveQuizStepNumber() {
   const active = document.querySelector('.quiz-step.active');
-  if (!active || !active.id) return 1;
+  if (!active || !active.id) return 0;
   const m = active.id.match(/step(\d+)/);
-  return m ? Number(m[1]) : 1;
+  return m ? Number(m[1]) : 0;
 }
 
 function setQuizActiveStep(n) {
@@ -862,10 +1057,17 @@ function saveQuizState() {
 
 function loadQuizState() {
   // Challenge pages don't include the quiz markup; avoid errors.
-  if (!document.getElementById('quizResult') || !document.getElementById('step1')) return;
+  if (!document.getElementById('quizResult') || !document.getElementById('step0')) return;
 
   const saved = readJSON(STORAGE.quizState, null);
-  if (!saved || typeof saved !== 'object') return;
+  const hasSaved = saved && typeof saved === 'object';
+  if (hasSaved && saved.answers && saved.answers.topic) {
+    renderQuizForTopic(saved.answers.topic);
+  } else {
+    renderQuizForTopic('performance');
+  }
+
+  if (!hasSaved) return;
 
   const savedAnswers = saved.answers || {};
   Object.keys(answers).forEach(k => delete answers[k]);
@@ -889,18 +1091,30 @@ function showResult() {
   const quizResultEl = document.getElementById('quizResult');
   if (!resultTitleEl || !resultDescEl || !resultHabitsEl || !quizResultEl) return;
 
-  const e = answers.energy;
-  const f = answers.free;
-  const w = answers.win;
+  if (!answers.topic || !answers.q1 || !answers.q2 || !answers.q3) return;
 
+  const scores = {
+    athlete: 0,
+    builder: 0,
+    connector: 0,
+    creator: 0,
+    explorer: 0
+  };
+  [answers.q1, answers.q2, answers.q3].forEach(choice => {
+    if (scores[choice] !== undefined) scores[choice] += 1;
+  });
   let pathKey = 'explorer';
-  if      (e === 'body'   || f === 'train'   || w === 'compete') pathKey = 'athlete';
-  else if (e === 'mind'   || f === 'build'   || w === 'launch')  pathKey = 'builder';
-  else if (e === 'people' || w === 'impact')                      pathKey = 'connector';
-  else if (e === 'create' || f === 'express' || w === 'mastery')  pathKey = 'creator';
+  let bestScore = -1;
+  Object.keys(scores).forEach(key => {
+    if (scores[key] > bestScore) {
+      bestScore = scores[key];
+      pathKey = key;
+    }
+  });
 
   const p = PATHS[pathKey];
-  resultTitleEl.textContent = p.title;
+  const topicLabel = (QUIZ_TOPICS[answers.topic] && QUIZ_TOPICS[answers.topic].label) || 'Personal';
+  resultTitleEl.textContent = `${p.title} (${topicLabel})`;
   resultDescEl.textContent  = p.desc;
 
   resultHabitsEl.innerHTML = p.habits
@@ -931,11 +1145,12 @@ function showResult() {
 
 function resetQuiz() {
   Object.keys(answers).forEach(k => delete answers[k]);
+  renderQuizForTopic('performance');
   const quizResultEl = document.getElementById('quizResult');
   if (quizResultEl) quizResultEl.classList.remove('active');
   document.querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('selected'));
-  const step1El = document.getElementById('step1');
-  if (step1El) step1El.classList.add('active');
+  const step0El = document.getElementById('step0');
+  if (step0El) step0El.classList.add('active');
 
   localStorage.removeItem(STORAGE.quizState);
 }
