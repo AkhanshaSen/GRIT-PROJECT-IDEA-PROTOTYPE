@@ -235,23 +235,23 @@ function getCoachCelebration(mode) {
 }
 
 function downloadFile(filename, content, mimeType) {
-  const blob = new Blob([content], { type: mimeType });
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
-  if (isMobile && navigator.share && typeof File !== 'undefined') {
-    const file = new File([blob], filename, { type: mimeType });
-    navigator.share({ files: [file], title: filename }).catch(() => {});
+  if (typeof navigator !== 'undefined' && typeof navigator.msSaveOrOpenBlob === 'function') {
+    const blobIE = new Blob([content], { type: mimeType });
+    navigator.msSaveOrOpenBlob(blobIE, filename);
     return;
   }
 
+  const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
   a.download = filename;
   a.rel = 'noopener';
+  a.style.display = 'none';
   document.body.appendChild(a);
-  a.click();
+  a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
   a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 300);
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
 function buildCoachTextSummary(challengeTitle, challengeDays, entry, dayValue, mode) {
@@ -396,8 +396,10 @@ function initChallengePage() {
   const winsList = document.getElementById('winsList');
   const chooseAnotherTrigger = document.querySelector('.choose-another-trigger');
   const carouselModal = document.getElementById('challengeCarouselModal');
-  const carouselCloseBtn = document.querySelector('.challenge-carousel-x, .challenge-carousel-close');
+  const carouselCloseBtn = document.querySelector('.challenge-carousel-close');
   const carouselTrack = document.getElementById('challengeCarouselTrack');
+  const carouselPrevBtn = document.getElementById('carouselPrevBtn');
+  const carouselNextBtn = document.getElementById('carouselNextBtn');
 
   let selectedMood = null;
   let selectedTrigger = null;
@@ -591,29 +593,6 @@ function initChallengePage() {
     celebrateJourney(getCoachCelebration(mode));
   }
 
-  function buildDraftCoachEntry() {
-    const existingSaved = readCoachEntry(challengeDays) || {};
-    const wins = Array.isArray(existingSaved.wins) ? [...existingSaved.wins] : [];
-    if (winInput && winInput.value.trim()) wins.push(winInput.value.trim());
-    return {
-      ...existingSaved,
-      mood: selectedMood || existingSaved.mood || null,
-      trigger: selectedTrigger || existingSaved.trigger || null,
-      obstacle: selectedObstacle || existingSaved.obstacle || null,
-      supportSystem: selectedSupport || existingSaved.supportSystem || null,
-      motivation: motivationInput ? motivationInput.value.trim() : (existingSaved.motivation || ''),
-      challengeMeter: challengeMeterInput ? Number(challengeMeterInput.value) : existingSaved.challengeMeter,
-      challengeCause: challengeCauseInput ? challengeCauseInput.value.trim() : (existingSaved.challengeCause || ''),
-      winImpact: winImpactInput ? Number(winImpactInput.value) : existingSaved.winImpact,
-      reflection: reflectionInput ? reflectionInput.value.trim() : (existingSaved.reflection || ''),
-      wins,
-      day: readChallengeDay(challengeDays),
-      challengeDays,
-      challengeTitle: pageTitle || selectedChallenge.title || 'Challenge',
-      savedAt: existingSaved.savedAt || new Date().toISOString()
-    };
-  }
-
   if (saveBtn) {
     saveBtn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -639,7 +618,11 @@ function initChallengePage() {
   if (exportSummaryBtn) {
     exportSummaryBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      const entry = buildDraftCoachEntry();
+      const entry = readCoachEntry(challengeDays);
+      if (!entry) {
+        celebrateJourney('Save one check-in first, then export.');
+        return;
+      }
       const dayVal = readChallengeDay(challengeDays);
       const mode = computeCoachMode(entry, dayVal || 1, challengeDays);
       const text = buildCoachTextSummary(pageTitle || 'Challenge', challengeDays, entry, dayVal, mode);
@@ -651,7 +634,11 @@ function initChallengePage() {
   if (exportJsonBtn) {
     exportJsonBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      const entry = buildDraftCoachEntry();
+      const entry = readCoachEntry(challengeDays);
+      if (!entry) {
+        celebrateJourney('Save one check-in first, then export.');
+        return;
+      }
       const payload = {
         ...entry,
         day: readChallengeDay(challengeDays),
@@ -692,6 +679,15 @@ function initChallengePage() {
     carouselModal.addEventListener('click', (e) => {
       if (e.target === carouselModal) closeCarousel();
     });
+  }
+
+  if (carouselTrack && carouselPrevBtn && carouselNextBtn) {
+    function scrollCards(direction) {
+      const amount = Math.round(carouselTrack.clientWidth * 0.65) * direction;
+      carouselTrack.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+    carouselPrevBtn.addEventListener('click', () => scrollCards(-1));
+    carouselNextBtn.addEventListener('click', () => scrollCards(1));
   }
 
   document.addEventListener('keydown', (e) => {
@@ -1229,7 +1225,8 @@ function copyMantra() {
   const drawer = document.createElement('aside');
   drawer.className = 'mobile-nav-drawer';
   drawer.setAttribute('aria-hidden', 'true');
-  drawer.innerHTML = `<a class="mobile-nav-logo" href="#">GRIT</a>${links.innerHTML}`;
+  const logoHref = logo.getAttribute('href') || '#';
+  drawer.innerHTML = `<a class="mobile-nav-logo" href="${logoHref}">GRIT</a>${links.innerHTML}`;
 
   const backdrop = document.createElement('div');
   backdrop.className = 'mobile-nav-backdrop';
@@ -1273,13 +1270,6 @@ function copyMantra() {
   });
 
   backdrop.addEventListener('click', closeMenu);
-  const drawerLogo = drawer.querySelector('.mobile-nav-logo');
-  if (drawerLogo) {
-    drawerLogo.addEventListener('click', (e) => {
-      if (isMobileView()) e.preventDefault();
-      closeMenu();
-    });
-  }
   drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
   window.addEventListener('resize', () => {
     if (!isMobileView()) closeMenu();
