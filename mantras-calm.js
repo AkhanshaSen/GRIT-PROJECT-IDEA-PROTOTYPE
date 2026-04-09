@@ -86,6 +86,7 @@
   let sereneAudio = null;
   let tickTimer = null;
   let secondTimer = null;
+  let prepTimer = null;
 
   // 4s inhale, 6s exhale
   const phases = [
@@ -117,8 +118,10 @@
   function stopAudio() {
     if (tickTimer) clearInterval(tickTimer);
     if (secondTimer) clearInterval(secondTimer);
+    if (prepTimer) clearInterval(prepTimer);
     tickTimer = null;
     secondTimer = null;
+    prepTimer = null;
 
     if (sereneAudio) {
       sereneAudio.pause();
@@ -234,28 +237,46 @@
     secondsLeft = phases[0].seconds;
     cycle = 1;
     elapsed = 0;
-    render();
 
     panel.classList.add('open');
     panel.setAttribute('aria-hidden', 'false');
-    panel.classList.add('inhale');
+    panel.classList.remove('inhale');
     panel.classList.remove('exhale');
 
-    startAudio();
+    // Intro context before guided breathing starts.
+    let prep = 5;
+    phaseEl.textContent = 'Relax. Focus on the screen and sync with your breath.';
+    countEl.textContent = String(prep);
+    cycleEl.textContent = '0';
+    elapsedEl.textContent = '00:00';
 
-    tickTimer = setInterval(() => {
-      secondsLeft -= 1;
-      if (secondsLeft <= 0) {
-        if (phaseIdx === 1) cycle += 1;
-        phaseIdx = (phaseIdx + 1) % phases.length;
-        secondsLeft = phases[phaseIdx].seconds;
+    prepTimer = setInterval(() => {
+      prep -= 1;
+      if (prep <= 0) {
+        clearInterval(prepTimer);
+        prepTimer = null;
+
+        render();
+        panel.classList.add('inhale');
+        startAudio();
+
+        tickTimer = setInterval(() => {
+          secondsLeft -= 1;
+          if (secondsLeft <= 0) {
+            if (phaseIdx === 1) cycle += 1;
+            phaseIdx = (phaseIdx + 1) % phases.length;
+            secondsLeft = phases[phaseIdx].seconds;
+          }
+          render();
+        }, 1000);
+
+        secondTimer = setInterval(() => {
+          elapsed += 1;
+          render();
+        }, 1000);
+        return;
       }
-      render();
-    }, 1000);
-
-    secondTimer = setInterval(() => {
-      elapsed += 1;
-      render();
+      countEl.textContent = String(prep);
     }, 1000);
   }
 

@@ -237,33 +237,27 @@ function getCoachCelebration(mode) {
 async function downloadFile(filename, content, mimeType) {
   const blob = new Blob([content], { type: mimeType });
   const safeType = (mimeType || 'text/plain').split(';')[0];
-  let file = null;
-  try {
-    if (typeof File === 'function') {
-      file = new File([blob], filename, { type: safeType });
-    }
-  } catch {
-    file = null;
-  }
 
   // Best mobile UX: share sheet with file attachment.
-  if (
-    file &&
-    navigator.share &&
-    navigator.canShare &&
-    navigator.canShare({ files: [file] })
-  ) {
-    try {
-      await navigator.share({
-        files: [file],
-        title: filename,
-        text: `Export from GRIT: ${filename}`
-      });
-      return { ok: true, mode: 'share' };
-    } catch (err) {
-      if (err && err.name === 'AbortError') return { ok: false, mode: 'cancelled' };
-      // Continue to fallback download path.
+  try {
+    if (typeof File !== 'undefined' && navigator.share && navigator.canShare) {
+      const file = new File([blob], filename, { type: safeType });
+      if (navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: filename,
+            text: `Export from GRIT: ${filename}`
+          });
+          return { ok: true, mode: 'share' };
+        } catch (err) {
+          if (err && err.name === 'AbortError') return { ok: false, mode: 'cancelled' };
+          // Continue to fallback download path.
+        }
+      }
     }
+  } catch {
+    // Continue to fallback download path for older browsers/webviews.
   }
 
   // Mobile browsers can block direct download clicks from synthetic events.
@@ -287,6 +281,54 @@ async function downloadFile(filename, content, mimeType) {
     URL.revokeObjectURL(url);
   }, 1200);
   return { ok: true, mode: 'download' };
+}
+
+function openExportPreview(filename, content) {
+  const escaped = String(content)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${filename}</title><style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b0b0b;color:#f5f0e8;margin:0;padding:16px}h1{font-size:18px;margin:0 0 8px}.meta{color:#c9b89a;font-size:13px;margin-bottom:12px}pre{white-space:pre-wrap;word-break:break-word;background:#121212;border:1px solid #2a2a2a;border-radius:8px;padding:12px;line-height:1.55}</style></head><body><h1>${filename}</h1><div class="meta">If download/share is blocked on this phone, copy from this preview.</div><pre>${escaped}</pre></body></html>`;
+  const previewBlob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const previewUrl = URL.createObjectURL(previewBlob);
+  const popup = window.open(previewUrl, '_blank');
+  if (!popup) window.location.href = previewUrl;
+  setTimeout(() => URL.revokeObjectURL(previewUrl), 2500);
+}
+
+function showCoachGuidePopup(title, lines, isError = false) {
+  let wrap = document.getElementById('coachGuidePopup');
+  if (!wrap) {
+    wrap = document.createElement('div');
+    wrap.id = 'coachGuidePopup';
+    wrap.className = 'coach-guide-pop';
+    wrap.innerHTML = `
+      <div class="coach-guide-card">
+        <button class="coach-guide-close" type="button" aria-label="Close">×</button>
+        <div class="coach-guide-title"></div>
+        <div class="coach-guide-body"></div>
+      </div>
+    `;
+    document.body.appendChild(wrap);
+    const closeBtn = wrap.querySelector('.coach-guide-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        wrap.classList.remove('open');
+      });
+    }
+    wrap.addEventListener('click', (e) => {
+      if (e.target === wrap) wrap.classList.remove('open');
+    });
+  }
+
+  const titleEl = wrap.querySelector('.coach-guide-title');
+  const bodyEl = wrap.querySelector('.coach-guide-body');
+  if (!titleEl || !bodyEl) return;
+
+  titleEl.textContent = title;
+  bodyEl.innerHTML = lines.map((line, idx) => `<div>${idx + 1}. ${line}</div>`).join('');
+  wrap.classList.toggle('is-error', Boolean(isError));
+  wrap.classList.add('open');
 }
 
 function buildCoachTextSummary(challengeTitle, challengeDays, entry, dayValue, mode) {
@@ -443,21 +485,34 @@ function initChallengePage() {
   let selectedObstacle = null;
   let selectedSupport = null;
   let coachEntry = readCoachEntry(challengeDays) || {};
-  const pressState = { lastTouchAt: 0 };
 
-  function bindPress(el, handler) {
-    if (!el || typeof handler !== 'function') return;
+  function validateCoachInputs() {
+    const dayVal = readChallengeDay(challengeDays);
+    const winsExisting = Array.isArray(coachEntry.wins) ? coachEntry.wins : [];
+    const winsPending = winInput && winInput.value.trim() ? [winInput.value.trim()] : [];
 
-    el.addEventListener('touchend', (e) => {
-      pressState.lastTouchAt = Date.now();
-      e.preventDefault();
-      handler(e);
-    }, { passive: false });
+    const hasSelection =
+      Boolean(selectedMood || coachEntry.mood) ||
+      Boolean(selectedTrigger || coachEntry.trigger) ||
+      Boolean(selectedObstacle || coachEntry.obstacle) ||
+      Boolean(selectedSupport || coachEntry.supportSystem);
 
-    el.addEventListener('click', (e) => {
-      if (Date.now() - pressState.lastTouchAt < 500) return;
-      handler(e);
-    });
+    const hasContextText =
+      Boolean((motivationInput && motivationInput.value.trim()) || coachEntry.motivation) ||
+      Boolean((challengeCauseInput && challengeCauseInput.value.trim()) || coachEntry.challengeCause) ||
+      Boolean((reflectionInput && reflectionInput.value.trim()) || coachEntry.reflection) ||
+      winsExisting.length > 0 ||
+      winsPending.length > 0;
+
+    const missing = [];
+    if (dayVal === null) missing.push(`Set your challenge day (1 to ${challengeDays}).`);
+    if (!hasSelection) missing.push('Choose at least one check-in option (mood / trigger / obstacle / support).');
+    if (!hasContextText) missing.push('Add motivation, reflection, challenge cause, or at least one win.');
+
+    return {
+      ok: missing.length === 0,
+      missing
+    };
   }
 
   function renderWins(list) {
@@ -539,25 +594,25 @@ function initChallengePage() {
   renderCoachOutcome();
 
   moodButtons.forEach(btn => {
-    bindPress(btn, () => {
+    btn.addEventListener('click', () => {
       selectMood(btn.getAttribute('data-mood'));
     });
   });
 
   triggerButtons.forEach(btn => {
-    bindPress(btn, () => {
+    btn.addEventListener('click', () => {
       selectTrigger(btn.getAttribute('data-trigger'));
     });
   });
 
   obstacleButtons.forEach(btn => {
-    bindPress(btn, () => {
+    btn.addEventListener('click', () => {
       selectObstacle(btn.getAttribute('data-obstacle'));
     });
   });
 
   supportButtons.forEach(btn => {
-    bindPress(btn, () => {
+    btn.addEventListener('click', () => {
       selectSupport(btn.getAttribute('data-support'));
     });
   });
@@ -608,26 +663,14 @@ function initChallengePage() {
   }
 
   function saveCoachEntry() {
+    const validation = validateCoachInputs();
+    if (!validation.ok) {
+      showCoachGuidePopup('Complete Coach Check-In', validation.missing, true);
+      celebrateJourney('Fill required coach inputs before saving.');
+      return false;
+    }
     const dayVal = readChallengeDay(challengeDays);
-    if (dayVal === null) {
-      celebrateJourney('Set your challenge day first, then save your check-in.');
-      return;
-    }
-
-    const draftMood = selectedMood || coachEntry.mood || null;
-    const draftTrigger = selectedTrigger || coachEntry.trigger || null;
-    const draftObstacle = selectedObstacle || coachEntry.obstacle || null;
-    const draftSupport = selectedSupport || coachEntry.supportSystem || null;
-    const draftMotivation = motivationInput ? motivationInput.value.trim() : (coachEntry.motivation || '');
-    const draftCause = challengeCauseInput ? challengeCauseInput.value.trim() : (coachEntry.challengeCause || '');
-    const draftReflection = reflectionInput ? reflectionInput.value.trim() : (coachEntry.reflection || '');
-    const hasContext =
-      Boolean(draftMood || draftTrigger || draftObstacle || draftSupport) ||
-      Boolean(draftMotivation || draftCause || draftReflection);
-    if (!hasContext) {
-      celebrateJourney('Add at least one check-in input (mood, trigger, obstacle, support, or a short note) before saving.');
-      return;
-    }
+    if (dayVal === null) return false;
 
     const wins = Array.isArray(coachEntry.wins) ? [...coachEntry.wins] : [];
     if (winInput && winInput.value.trim()) {
@@ -659,10 +702,11 @@ function initChallengePage() {
 
     const mode = computeCoachMode(coachEntry, dayVal, challengeDays);
     celebrateJourney(getCoachCelebration(mode));
+    return true;
   }
 
   if (saveBtn) {
-    bindPress(saveBtn, (e) => {
+    saveBtn.addEventListener('click', (e) => {
       e.preventDefault();
       saveDay();
     });
@@ -677,18 +721,34 @@ function initChallengePage() {
   }
 
   if (coachSaveBtn) {
-    bindPress(coachSaveBtn, (e) => {
+    coachSaveBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      saveCoachEntry();
+      const saved = saveCoachEntry();
+      if (!saved) return;
     });
   }
 
   if (exportSummaryBtn) {
-    bindPress(exportSummaryBtn, async (e) => {
+    exportSummaryBtn.addEventListener('click', async (e) => {
       e.preventDefault();
+      const validation = validateCoachInputs();
+      if (!validation.ok) {
+        showCoachGuidePopup('Before Exporting Summary', validation.missing, true);
+        celebrateJourney('Complete the required check-in fields first.');
+        return;
+      }
+
+      showCoachGuidePopup('Export Summary - Steps', [
+        'Tap "Save Check-In" if you changed anything.',
+        'A share/download screen opens next.',
+        'Choose Save to Files, Drive, or Share.',
+        'If blocked, a preview opens so you can copy the text.'
+      ]);
+
       let entry = readCoachEntry(challengeDays);
       if (!entry) {
-        saveCoachEntry();
+        const saved = saveCoachEntry();
+        if (!saved) return;
         entry = readCoachEntry(challengeDays);
       }
       if (!entry) {
@@ -698,19 +758,45 @@ function initChallengePage() {
       const dayVal = readChallengeDay(challengeDays);
       const mode = computeCoachMode(entry, dayVal || 1, challengeDays);
       const text = buildCoachTextSummary(pageTitle || 'Challenge', challengeDays, entry, dayVal, mode);
-      const res = await downloadFile(`grit-${challengeDays}-day-summary.txt`, text, 'text/plain;charset=utf-8');
+      const fileName = `grit-${challengeDays}-day-summary.txt`;
+      let res = null;
+      try {
+        res = await downloadFile(fileName, text, 'text/plain;charset=utf-8');
+      } catch {
+        openExportPreview(fileName, text);
+        celebrateJourney('Export fallback opened. Copy/save from preview.');
+        return;
+      }
       if (res && res.mode === 'share') celebrateJourney('Summary ready in share sheet.');
       else if (res && res.mode === 'cancelled') celebrateJourney('Export cancelled.');
-      else celebrateJourney('Summary exported.');
+      else {
+        if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) openExportPreview(fileName, text);
+        celebrateJourney('Summary exported.');
+      }
     });
   }
 
   if (exportJsonBtn) {
-    bindPress(exportJsonBtn, async (e) => {
+    exportJsonBtn.addEventListener('click', async (e) => {
       e.preventDefault();
+      const validation = validateCoachInputs();
+      if (!validation.ok) {
+        showCoachGuidePopup('Before Exporting JSON', validation.missing, true);
+        celebrateJourney('Complete the required check-in fields first.');
+        return;
+      }
+
+      showCoachGuidePopup('Export JSON - Steps', [
+        'Tap "Save Check-In" if you changed anything.',
+        'A share/download screen opens next.',
+        'Choose Save to Files or Share app.',
+        'If blocked, a preview opens so you can copy the JSON.'
+      ]);
+
       let entry = readCoachEntry(challengeDays);
       if (!entry) {
-        saveCoachEntry();
+        const saved = saveCoachEntry();
+        if (!saved) return;
         entry = readCoachEntry(challengeDays);
       }
       if (!entry) {
@@ -722,15 +808,27 @@ function initChallengePage() {
         day: readChallengeDay(challengeDays),
         exportedAt: new Date().toISOString()
       };
-      const res = await downloadFile(`grit-${challengeDays}-day-data.json`, JSON.stringify(payload, null, 2), 'application/json;charset=utf-8');
+      const fileName = `grit-${challengeDays}-day-data.json`;
+      const body = JSON.stringify(payload, null, 2);
+      let res = null;
+      try {
+        res = await downloadFile(fileName, body, 'application/json;charset=utf-8');
+      } catch {
+        openExportPreview(fileName, body);
+        celebrateJourney('Export fallback opened. Copy/save from preview.');
+        return;
+      }
       if (res && res.mode === 'share') celebrateJourney('JSON ready in share sheet.');
       else if (res && res.mode === 'cancelled') celebrateJourney('Export cancelled.');
-      else celebrateJourney('JSON exported.');
+      else {
+        if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) openExportPreview(fileName, body);
+        celebrateJourney('JSON exported.');
+      }
     });
   }
 
   if (coachInfoBtn && coachInfoPop) {
-    bindPress(coachInfoBtn, () => {
+    coachInfoBtn.addEventListener('click', () => {
       const isHidden = coachInfoPop.hasAttribute('hidden');
       if (isHidden) coachInfoPop.removeAttribute('hidden');
       else coachInfoPop.setAttribute('hidden', 'hidden');
@@ -750,14 +848,14 @@ function initChallengePage() {
   }
 
   if (chooseAnotherTrigger) {
-    bindPress(chooseAnotherTrigger, (e) => {
+    chooseAnotherTrigger.addEventListener('click', (e) => {
       e.preventDefault();
       openCarousel();
     });
   }
 
   if (carouselCloseBtn) {
-    bindPress(carouselCloseBtn, (e) => {
+    carouselCloseBtn.addEventListener('click', (e) => {
       e.preventDefault();
       closeCarousel();
     });
