@@ -172,20 +172,19 @@ body[data-challenge-days] .challenge-carousel-shell {
 }
 body[data-challenge-days] .challenge-carousel-close {
   position: absolute;
-  top: 0.6rem;
-  right: 0.7rem;
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
-  min-height: 30px;
-  padding: 0;
-  margin: 0;
-  border-radius: 50%;
+  top: 0.72rem;
+  right: 0.72rem;
+  width: 34px !important;
+  min-width: 34px;
+  height: 34px;
+  margin: 0 !important;
+  padding: 0 !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 1.1rem;
   line-height: 1;
+  z-index: 2;
 }
 
 body[data-challenge-days] .challenge-carousel-track {
@@ -350,19 +349,19 @@ nav {
   z-index: 230;
   transition: transform 0.22s ease, opacity 0.2s ease;
 }
+.mobile-nav-brand {
+  display: inline-block;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 4px;
+  color: var(--orange);
+  text-decoration: none;
+  margin-bottom: 0.7rem;
+}
 .mobile-nav-drawer.open {
   transform: translateX(0);
   opacity: 1;
   pointer-events: auto;
-}
-.mobile-nav-logo {
-  display: inline-block;
-  margin-bottom: 0.7rem;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.9rem;
-  letter-spacing: 4px;
-  color: var(--orange);
-  text-decoration: none;
 }
 .mobile-nav-drawer a {
   display: block;
@@ -1294,18 +1293,10 @@ h1 span { color: var(--orange); }
 }
 .join-textarea {
   margin-top: 0.8rem;
-  min-height: 104px;
-  height: 104px;
-  width: 100%;
+  min-height: 100px;
+  height: 120px;
   border-right: 1px solid rgba(255,255,255,0.15);
   resize: vertical;
-}
-.join-glass-form .cta-input {
-  width: 100%;
-  min-height: 52px;
-}
-.join-glass-form .join-form-grid .cta-input {
-  height: 52px;
 }
 .join-promise-row {
   margin-top: 0.9rem;
@@ -1417,6 +1408,7 @@ footer {
   nav { padding: 0.85rem 1rem; }
   .nav-logo { font-size: 1.6rem; letter-spacing: 3px; }
   .mobile-nav-drawer { width: min(86vw, 300px); padding-top: 4.8rem; }
+  .mobile-nav-brand { font-size: 1.7rem; letter-spacing: 3px; }
 
   #hero,
   #pillars,
@@ -1484,12 +1476,9 @@ footer {
     width: 100%;
     padding: 1rem;
   }
-  body[data-challenge-days] .challenge-carousel-controls {
-    justify-content: stretch;
-  }
-  body[data-challenge-days] .challenge-carousel-controls .btn-primary,
-  body[data-challenge-days] .challenge-carousel-controls .btn-ghost {
-    width: 100%;
+  body[data-challenge-days] .challenge-carousel-close {
+    right: 0.6rem;
+    top: 0.6rem;
   }
   body[data-challenge-days] .challenge-carousel-card {
     flex-basis: 86%;

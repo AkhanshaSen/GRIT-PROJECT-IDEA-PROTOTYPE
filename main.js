@@ -235,23 +235,22 @@ function getCoachCelebration(mode) {
 }
 
 function downloadFile(filename, content, mimeType) {
-  if (typeof navigator !== 'undefined' && typeof navigator.msSaveOrOpenBlob === 'function') {
-    const blobIE = new Blob([content], { type: mimeType });
-    navigator.msSaveOrOpenBlob(blobIE, filename);
-    return;
-  }
-
   const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
   a.download = filename;
-  a.rel = 'noopener';
-  a.style.display = 'none';
   document.body.appendChild(a);
-  a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+  a.click();
   a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1500);
+  setTimeout(() => URL.revokeObjectURL(url), 1200);
+
+  // Mobile/webview fallback where `download` may be ignored.
+  setTimeout(() => {
+    if (document.visibilityState === 'visible') {
+      window.open(url, '_blank');
+    }
+  }, 120);
 }
 
 function buildCoachTextSummary(challengeTitle, challengeDays, entry, dayValue, mode) {
@@ -1225,8 +1224,10 @@ function copyMantra() {
   const drawer = document.createElement('aside');
   drawer.className = 'mobile-nav-drawer';
   drawer.setAttribute('aria-hidden', 'true');
-  const logoHref = logo.getAttribute('href') || '#';
-  drawer.innerHTML = `<a class="mobile-nav-logo" href="${logoHref}">GRIT</a>${links.innerHTML}`;
+  const linkMarkup = Array.from(links.querySelectorAll('a'))
+    .map(a => `<a href="${a.getAttribute('href') || '#'}">${a.textContent || ''}</a>`)
+    .join('');
+  drawer.innerHTML = `<a class="mobile-nav-brand" href="index.html">GRIT</a>${linkMarkup}`;
 
   const backdrop = document.createElement('div');
   backdrop.className = 'mobile-nav-backdrop';

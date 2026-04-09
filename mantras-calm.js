@@ -14,8 +14,10 @@
   const drawer = document.createElement('aside');
   drawer.className = 'mobile-nav-drawer';
   drawer.setAttribute('aria-hidden', 'true');
-  const logoHref = logo.getAttribute('href') || 'index.html';
-  drawer.innerHTML = `<a class="mobile-nav-logo" href="${logoHref}">GRIT</a>${links.innerHTML}`;
+  const linkMarkup = Array.from(links.querySelectorAll('a'))
+    .map(a => `<a href="${a.getAttribute('href') || '#'}">${a.textContent || ''}</a>`)
+    .join('');
+  drawer.innerHTML = `<a class="mobile-nav-brand" href="index.html">GRIT</a>${linkMarkup}`;
 
   const backdrop = document.createElement('div');
   backdrop.className = 'mobile-nav-backdrop';
