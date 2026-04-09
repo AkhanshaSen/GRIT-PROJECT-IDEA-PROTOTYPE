@@ -1,0 +1,25 @@
+<svg width="1200" height="700" viewBox="0 0 1200 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="700" fill="#0C140E"/>
+  <defs>
+    <radialGradient id="m1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(860 220) rotate(128) scale(560 380)">
+      <stop stop-color="#7BA85A" stop-opacity="0.66"/>
+      <stop offset="1" stop-color="#7BA85A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="m2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(280 500) rotate(25) scale(520 340)">
+      <stop stop-color="#5C8044" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#5C8044" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#m1)"/>
+  <rect width="1200" height="700" fill="url(#m2)"/>
+  <g opacity="0.2" stroke="#CFE4C2">
+    <path d="M0 140H1200M0 280H1200M0 420H1200M0 560H1200"/>
+    <path d="M140 0V700M280 0V700M420 0V700M560 0V700M700 0V700M840 0V700M980 0V700"/>
+  </g>
+  <g fill="#DFF0D5" fill-opacity="0.92">
+    <circle cx="255" cy="250" r="70" fill-opacity="0.24"/>
+    <path d="M225 288C225 246 259 212 301 212C301 254 267 288 225 288Z"/>
+    <path d="M207 306C207 264 241 230 283 230C283 272 249 306 207 306Z" fill-opacity="0.7"/>
+  </g>
+  <text x="70" y="650" fill="#DFF0D5" fill-opacity="0.9" font-family="Arial, sans-serif" font-size="32" letter-spacing="2">MOMENTUM GROWTH VISUAL</text>
+</svg>

@@ -1,0 +1,11 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" rx="24" fill="#111318"/>
+  <circle cx="200" cy="200" r="130" fill="#1B2230"/>
+  <ellipse cx="200" cy="230" rx="80" ry="90" fill="#E9E1D3"/>
+  <circle cx="170" cy="215" r="8" fill="#14161A"/>
+  <circle cx="230" cy="215" r="8" fill="#14161A"/>
+  <path d="M165 265C175 280 225 280 235 265" stroke="#14161A" stroke-width="6" stroke-linecap="round"/>
+  <path d="M200 92C230 92 258 110 272 138C248 130 220 126 200 126C180 126 152 130 128 138C142 110 170 92 200 92Z" fill="#D3CCBF"/>
+  <path d="M145 286C160 326 182 348 200 348C218 348 240 326 255 286H145Z" fill="#F2EBDD"/>
+  <text x="200" y="380" fill="#CBBFA6" font-family="Arial, sans-serif" font-size="22" text-anchor="middle">LAO TZU</text>
+</svg>

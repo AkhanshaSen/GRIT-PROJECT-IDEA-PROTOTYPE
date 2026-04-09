@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GRIT — 30-Day Grit Sprint</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body data-challenge-days="30" data-challenge-title="The Grit Sprint">
+
+  <!-- ══════════════════════════════════════
+       NAV
+  ═══════════════════════════════════════ -->
+  <nav>
+    <a class="nav-logo" href="index.html">GRIT</a>
+    <ul class="nav-links">
+      <li><a href="index.html#pillars">About</a></li>
+      <li><a href="index.html#interests">Find Your Fire</a></li>
+      <li><a href="index.html#mantras">Mantras</a></li>
+      <li><a href="index.html#challenge">Challenges</a></li>
+      <li><a href="index.html#cta">Start</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════ -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-bg-grid"></div>
+
+    <div class="hero-left">
+      <div class="hero-label">30-Day Challenge — Keep Grinding</div>
+      <h1>THE GRIT<br><span>SPRINT.</span><br>NEVER STOP.</h1>
+      <p class="hero-sub">
+        Five daily habits. Weekly check-ins. You don't need to feel ready — you need to show up.
+      </p>
+      <div>
+        <a href="#journey-story" class="btn-primary">See Your Journey</a>
+        <a href="#" class="btn-ghost choose-another-trigger">Choose Another</a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="challenge-visual">
+        <img src="assets/challenge-art/grit-maroon.svg" alt="Grit sprint original visual" />
+        <div class="challenge-visual-caption">Execution beats intention every single day.</div>
+      </div>
+      <div class="hero-card challenge-side-card">
+        <div class="today-label">Execution Arena</div>
+        <p class="today-task">Treat each day like a performance rep: commit, execute, and ship.</p>
+        <div class="mantra-grid">
+          <div class="mantra-card">Pick one measurable deliverable for today.</div>
+          <div class="mantra-card">Set a deadline and finish before it.</div>
+          <div class="mantra-card">Score your output quality and speed.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       JOURNEY STORY
+  ═══════════════════════════════════════ -->
+  <section id="journey-story">
+    <div class="journey-inner">
+      <div class="section-label">Journey Story</div>
+      <h2 class="section-title">DAY BY DAY<br>GRIT</h2>
+      <p class="section-sub">
+        The grind doesn't stop. Neither do you. You only need to be better than yesterday — once.
+      </p>
+
+      <div class="journey-day-row">
+        <div class="cta-input-row">
+          <input
+            class="cta-input"
+            id="challengeDayInput"
+            type="number"
+            min="1"
+            max="30"
+            placeholder="What day are you on? (1–30)"
+          />
+          <button class="btn-primary" id="challengeDaySave" style="white-space:nowrap">Save Day →</button>
+        </div>
+        <p class="cta-note" id="challengeDayHint">Set your day once, then come back daily to keep leveling up.</p>
+      </div>
+
+      <div class="journey-module" data-module="wins">
+        <div class="result-label">Win Board</div>
+        <div class="quiz-q">Log one win from today</div>
+        <div class="journey-day-row">
+          <input
+            class="cta-input"
+            id="winInput"
+            type="text"
+            placeholder="What did you execute well today?"
+          />
+        </div>
+        <div class="journey-day-row">
+          <div class="result-label">Win impact</div>
+          <input id="winImpactInput" type="range" min="1" max="5" value="3" />
+          <p class="cta-note">Impact: <span id="winImpactValue">3</span>/5</p>
+        </div>
+        <div class="mantra-grid" id="winsList"></div>
+      </div>
+
+      <div class="journey-module">
+        <div class="result-label">Coach Outcome</div>
+        <div class="mantra-display">
+          <div class="mantra-text" id="coachMode">STEADY MODE</div>
+          <div class="mantra-sub" id="coachAdvice">Answer the check-in to get your tailored coaching message.</div>
+        </div>
+        <div class="journey-day-row">
+          <button class="btn-primary" id="coachSaveBtn">Save Check-In</button>
+          <button class="btn-ghost" id="exportSummaryBtn">Export Summary</button>
+          <button class="btn-ghost" id="exportJsonBtn">Export JSON</button>
+        </div>
+      </div>
+
+      <div class="mantra-display">
+        <div class="mantra-text" id="journeyDayTitle">DAY 1 OF 30</div>
+        <div class="mantra-sub" id="journeyPrompt">Do the hard thing. Then do 5 more.</div>
+      </div>
+
+      <div class="streak-bar">
+        <div class="streak-row">
+          <span class="streak-label">Challenge Progress</span>
+          <span class="streak-count" id="journeyProgressCount">0 / 30</span>
+        </div>
+        <div class="streak-dots" id="journeyDots"></div>
+      </div>
+
+      <div class="mantra-grid">
+        <div class="mantra-card" id="journeyMilestone1"></div>
+        <div class="mantra-card" id="journeyMilestone2"></div>
+        <div class="mantra-card" id="journeyMilestone3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════ -->
+  <footer>
+    <div class="footer-logo">GRIT</div>
+    <div class="footer-copy">© 2026 GRIT. Built for those who refuse to quit.</div>
+  </footer>
+
+  <div class="challenge-carousel-modal" id="challengeCarouselModal" aria-hidden="true">
+    <div class="challenge-carousel-shell">
+      <button class="btn-ghost challenge-carousel-close" type="button">Close</button>
+      <div class="section-label">Choose Your Next Challenge</div>
+      <div class="challenge-carousel-track" id="challengeCarouselTrack">
+        <a class="challenge-carousel-card tint-blue" href="challenge-7.html"><span>7 Days</span> Ignition Sprint</a>
+        <a class="challenge-carousel-card tint-moss" href="challenge-21.html"><span>21 Days</span> Momentum Builder</a>
+        <a class="challenge-carousel-card tint-maroon" href="challenge-30.html"><span>30 Days</span> Grit Sprint</a>
+        <a class="challenge-carousel-card tint-deep-maroon" href="challenge-66.html"><span>66 Days</span> Identity Shift</a>
+      </div>
+      <div class="challenge-carousel-controls">
+        <button class="btn-ghost" type="button" id="carouselPrevBtn">Prev</button>
+        <button class="btn-primary" type="button" id="carouselNextBtn">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+
+</html>
+

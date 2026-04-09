@@ -1,0 +1,24 @@
+<svg width="1200" height="700" viewBox="0 0 1200 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="700" fill="#071427"/>
+  <defs>
+    <radialGradient id="g1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(860 210) rotate(132) scale(520 390)">
+      <stop stop-color="#4D9EFF" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#4D9EFF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(340 520) rotate(33) scale(480 330)">
+      <stop stop-color="#2A7CE0" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#2A7CE0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#g1)"/>
+  <rect width="1200" height="700" fill="url(#g2)"/>
+  <g opacity="0.2" stroke="#BBD9FF">
+    <path d="M0 100H1200M0 200H1200M0 300H1200M0 400H1200M0 500H1200M0 600H1200"/>
+    <path d="M100 0V700M200 0V700M300 0V700M400 0V700M500 0V700M600 0V700M700 0V700M800 0V700M900 0V700M1000 0V700M1100 0V700"/>
+  </g>
+  <g>
+    <circle cx="265" cy="250" r="78" fill="#4D9EFF" fill-opacity="0.35"/>
+    <path d="M265 188L305 265H275L305 330L232 251H262L240 188H265Z" fill="#D9ECFF"/>
+  </g>
+  <text x="70" y="650" fill="#D9ECFF" fill-opacity="0.9" font-family="Arial, sans-serif" font-size="32" letter-spacing="2">IGNITION ENERGY VISUAL</text>
+</svg>

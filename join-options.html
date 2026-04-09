@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GRIT — Join Experience</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="join-page">
+  <nav>
+    <a class="nav-logo" href="index.html">GRIT</a>
+    <ul class="nav-links">
+      <li><a href="index.html#challenge">Challenges</a></li>
+      <li><a href="index.html#mantras">Mantras</a></li>
+      <li><a href="index.html">Back Home</a></li>
+    </ul>
+  </nav>
+
+  <section id="join-experience">
+    <div class="join-bg"></div>
+    <div class="join-grid">
+      <div>
+        <div class="section-label">Choose Your Path</div>
+        <h1 class="join-title">BUILD YOUR<br>GRIT<br>JOURNEY</h1>
+        <p class="join-sub">Pick how you want to experience GRIT first, then personalize your plan.</p>
+
+        <div class="join-ad-grid" id="joinAdGrid">
+          <button class="join-ad-card selected" type="button" data-path="web-portal">
+            <span class="join-ad-tag">Option 1</span>
+            <div class="join-ad-name">Web Portal</div>
+            <p>Structured dashboard, progress analytics, and challenge workspace in one place.</p>
+          </button>
+          <button class="join-ad-card" type="button" data-path="mobile-app">
+            <span class="join-ad-tag">Option 2</span>
+            <div class="join-ad-name">Mobile App</div>
+            <p>On-the-go check-ins, mantra reminders, and quick daily momentum sessions.</p>
+          </button>
+        </div>
+      </div>
+
+      <form class="join-glass-form" id="joinDetailsForm">
+        <div class="result-label">Your Setup Sheet</div>
+        <h2 class="section-title" style="font-size:2.2rem; margin-bottom:0.8rem;">TELL US<br>ABOUT YOU</h2>
+        <div class="join-form-grid">
+          <input class="cta-input" id="joinName" type="text" placeholder="Your name" required />
+          <input class="cta-input" id="joinEmail" type="email" placeholder="your@email.com" required />
+          <input class="cta-input" id="joinAge" type="number" min="10" max="80" placeholder="Age" />
+          <input class="cta-input" id="joinGoal" type="text" placeholder="Main goal (e.g., discipline, fitness, focus)" />
+        </div>
+        <textarea class="cta-input join-textarea" id="joinMotivation" placeholder="What motivates you?" required></textarea>
+        <textarea class="cta-input join-textarea" id="joinBlockers" placeholder="What usually holds you back?"></textarea>
+
+        <label class="join-promise-row">
+          <input type="checkbox" id="joinPromise" required />
+          <span>I promise to improve my grit, keep showing up, and build a better life with consistency.</span>
+        </label>
+
+        <div class="join-actions">
+          <button class="btn-primary" type="submit">Start My Grit Journey →</button>
+          <a href="index.html#challenge" class="btn-ghost">Skip for now</a>
+        </div>
+        <p class="cta-note" id="joinResultMsg">Your setup is private to this browser for now.</p>
+      </form>
+    </div>
+  </section>
+
+  <script src="join-options.js"></script>
+</body>
+</html>

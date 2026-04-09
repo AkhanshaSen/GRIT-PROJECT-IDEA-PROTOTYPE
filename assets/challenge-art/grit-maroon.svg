@@ -1,0 +1,25 @@
+<svg width="1200" height="700" viewBox="0 0 1200 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="700" fill="#19070B"/>
+  <defs>
+    <radialGradient id="r1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(840 240) rotate(130) scale(520 360)">
+      <stop stop-color="#A94457" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#A94457" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="r2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(330 500) rotate(24) scale(500 320)">
+      <stop stop-color="#732739" stop-opacity="0.52"/>
+      <stop offset="1" stop-color="#732739" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#r1)"/>
+  <rect width="1200" height="700" fill="url(#r2)"/>
+  <g opacity="0.18" stroke="#F0C1C8">
+    <path d="M0 120H1200M0 240H1200M0 360H1200M0 480H1200M0 600H1200"/>
+    <path d="M120 0V700M240 0V700M360 0V700M480 0V700M600 0V700M720 0V700M840 0V700M960 0V700M1080 0V700"/>
+  </g>
+  <g>
+    <circle cx="260" cy="250" r="74" fill="#F0C1C8" fill-opacity="0.27"/>
+    <path d="M205 290L260 210L315 290H285L260 253L235 290H205Z" fill="#FFDDE2"/>
+    <rect x="248" y="286" width="24" height="42" fill="#FFDDE2"/>
+  </g>
+  <text x="70" y="650" fill="#FFDDE2" fill-opacity="0.9" font-family="Arial, sans-serif" font-size="32" letter-spacing="2">GRIT EXECUTION VISUAL</text>
+</svg>

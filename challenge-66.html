@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GRIT — 66-Day Identity Shift</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body data-challenge-days="66" data-challenge-title="The Identity Shift">
+
+  <!-- ══════════════════════════════════════
+       NAV
+  ═══════════════════════════════════════ -->
+  <nav>
+    <a class="nav-logo" href="index.html">GRIT</a>
+    <ul class="nav-links">
+      <li><a href="index.html#pillars">About</a></li>
+      <li><a href="index.html#interests">Find Your Fire</a></li>
+      <li><a href="index.html#mantras">Mantras</a></li>
+      <li><a href="index.html#challenge">Challenges</a></li>
+      <li><a href="index.html#cta">Start</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════ -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-bg-grid"></div>
+
+    <div class="hero-left">
+      <div class="hero-label">66-Day Challenge — Identity Shift</div>
+      <h1>THE IDENTITY<br><span>SHIFT.</span><br>NEVER STOP.</h1>
+      <p class="hero-sub">
+        Willpower runs out. Identity doesn't. Build the habits that define who you become.
+      </p>
+      <div>
+        <a href="#journey-story" class="btn-primary">See Your Journey</a>
+        <a href="#" class="btn-ghost choose-another-trigger">Choose Another</a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="challenge-visual">
+        <img src="assets/challenge-art/identity-deep-maroon.svg" alt="Identity shift original visual" />
+        <div class="challenge-visual-caption">Identity is built one hard choice at a time.</div>
+      </div>
+      <div class="hero-card challenge-side-card">
+        <div class="today-label">Identity Engine</div>
+        <p class="today-task">The goal is not intensity today. The goal is identity consistency for 66 days.</p>
+        <div class="mantra-grid">
+          <div class="mantra-card">Name the person you are becoming in one line.</div>
+          <div class="mantra-card">Choose one standard you will not break this week.</div>
+          <div class="mantra-card">Reflect nightly on whether your actions matched identity.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       JOURNEY STORY
+  ═══════════════════════════════════════ -->
+  <section id="journey-story">
+    <div class="journey-inner">
+      <div class="section-label">Journey Story</div>
+      <h2 class="section-title">DAY BY DAY<br>IDENTITY</h2>
+      <p class="section-sub">
+        You are building an identity that shows up. Every completed rep writes a new story.
+      </p>
+
+      <div class="journey-day-row">
+        <div class="cta-input-row">
+          <input
+            class="cta-input"
+            id="challengeDayInput"
+            type="number"
+            min="1"
+            max="66"
+            placeholder="What day are you on? (1–66)"
+          />
+          <button class="btn-primary" id="challengeDaySave" style="white-space:nowrap">Save Day →</button>
+        </div>
+        <p class="cta-note" id="challengeDayHint">Set your day once, then come back daily to keep leveling up.</p>
+      </div>
+
+      <div class="journey-module" data-module="reflect">
+        <div class="result-label">Deep Reflection</div>
+        <div class="quiz-q">What is challenging you most right now?</div>
+        <div class="journey-day-row">
+          <textarea
+            class="cta-input"
+            id="reflectionInput"
+            rows="4"
+            style="border-right:1px solid rgba(255,255,255,0.15)"
+            placeholder="Describe the challenge and what support you need from yourself."
+          ></textarea>
+        </div>
+        <div class="journey-day-row">
+          <input
+            class="cta-input"
+            id="motivationInput"
+            type="text"
+            placeholder="What motivates you to keep going anyway?"
+          />
+        </div>
+        <div class="journey-day-row">
+          <div class="result-label">Support system check</div>
+          <div class="quiz-options">
+            <button class="quiz-opt" type="button" data-support="mentor">Mentor</button>
+            <button class="quiz-opt" type="button" data-support="friends">Friends</button>
+            <button class="quiz-opt" type="button" data-support="self">Self-accountability</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="journey-module">
+        <div class="result-label">Coach Outcome</div>
+        <div class="mantra-display">
+          <div class="mantra-text" id="coachMode">STEADY MODE</div>
+          <div class="mantra-sub" id="coachAdvice">Answer the check-in to get your tailored coaching message.</div>
+        </div>
+        <div class="journey-day-row">
+          <button class="btn-primary" id="coachSaveBtn">Save Check-In</button>
+          <button class="btn-ghost" id="exportSummaryBtn">Export Summary</button>
+          <button class="btn-ghost" id="exportJsonBtn">Export JSON</button>
+        </div>
+      </div>
+
+      <div class="mantra-display">
+        <div class="mantra-text" id="journeyDayTitle">DAY 1 OF 66</div>
+        <div class="mantra-sub" id="journeyPrompt">Small decisions. Big transformation.</div>
+      </div>
+
+      <div class="streak-bar">
+        <div class="streak-row">
+          <span class="streak-label">Challenge Progress</span>
+          <span class="streak-count" id="journeyProgressCount">0 / 66</span>
+        </div>
+        <div class="streak-dots" id="journeyDots"></div>
+      </div>
+
+      <div class="mantra-grid">
+        <div class="mantra-card" id="journeyMilestone1"></div>
+        <div class="mantra-card" id="journeyMilestone2"></div>
+        <div class="mantra-card" id="journeyMilestone3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════ -->
+  <footer>
+    <div class="footer-logo">GRIT</div>
+    <div class="footer-copy">© 2026 GRIT. Built for those who refuse to quit.</div>
+  </footer>
+
+  <div class="challenge-carousel-modal" id="challengeCarouselModal" aria-hidden="true">
+    <div class="challenge-carousel-shell">
+      <button class="btn-ghost challenge-carousel-close" type="button">Close</button>
+      <div class="section-label">Choose Your Next Challenge</div>
+      <div class="challenge-carousel-track" id="challengeCarouselTrack">
+        <a class="challenge-carousel-card tint-blue" href="challenge-7.html"><span>7 Days</span> Ignition Sprint</a>
+        <a class="challenge-carousel-card tint-moss" href="challenge-21.html"><span>21 Days</span> Momentum Builder</a>
+        <a class="challenge-carousel-card tint-maroon" href="challenge-30.html"><span>30 Days</span> Grit Sprint</a>
+        <a class="challenge-carousel-card tint-deep-maroon" href="challenge-66.html"><span>66 Days</span> Identity Shift</a>
+      </div>
+      <div class="challenge-carousel-controls">
+        <button class="btn-ghost" type="button" id="carouselPrevBtn">Prev</button>
+        <button class="btn-primary" type="button" id="carouselNextBtn">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+
+</html>
+

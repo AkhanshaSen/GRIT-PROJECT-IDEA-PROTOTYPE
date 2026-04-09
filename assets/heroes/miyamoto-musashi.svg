@@ -1,0 +1,12 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" rx="24" fill="#141015"/>
+  <circle cx="200" cy="200" r="130" fill="#221A2A"/>
+  <ellipse cx="200" cy="230" rx="82" ry="92" fill="#E7D6C4"/>
+  <circle cx="170" cy="220" r="8" fill="#14161A"/>
+  <circle cx="232" cy="220" r="8" fill="#14161A"/>
+  <path d="M170 270C182 284 220 284 232 270" stroke="#14161A" stroke-width="6" stroke-linecap="round"/>
+  <path d="M112 154C134 112 166 90 200 90C234 90 266 112 288 154C258 142 228 136 200 136C172 136 142 142 112 154Z" fill="#0E0F13"/>
+  <path d="M122 154L95 145" stroke="#AFA6B8" stroke-width="8" stroke-linecap="round"/>
+  <path d="M278 154L305 145" stroke="#AFA6B8" stroke-width="8" stroke-linecap="round"/>
+  <text x="200" y="380" fill="#CBB7A1" font-family="Arial, sans-serif" font-size="18" text-anchor="middle">MIYAMOTO MUSASHI</text>
+</svg>

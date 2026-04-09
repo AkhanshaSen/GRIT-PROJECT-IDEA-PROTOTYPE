@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GRIT — Calm Mantras</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="mantra-calm-page">
+  <nav>
+    <a class="nav-logo" href="index.html">GRIT</a>
+    <ul class="nav-links">
+      <li><a href="#why">Why Mantras</a></li>
+      <li><a href="#self-talk">Self Talk</a></li>
+      <li><a href="#heroes">Heroes</a></li>
+      <li><a href="index.html#mantras">Back</a></li>
+    </ul>
+  </nav>
+
+  <section id="calm-hero">
+    <div class="calm-mist"></div>
+    <div class="calm-ink"></div>
+    <div class="calm-inner">
+      <div class="section-label">Calm Mantra Space</div>
+      <h1 class="calm-title">INNER<br>PEACE<br>THROUGH<br>SELF-TALK</h1>
+      <p class="calm-sub">
+        Slow down your breathing. Repeat one sentence with intention.
+        The voice inside your head shapes your focus, your resilience, and your peace.
+      </p>
+      <div class="calm-pill-row">
+        <span class="calm-pill">I am steady.</span>
+        <span class="calm-pill">I can reset anytime.</span>
+        <span class="calm-pill">I choose peace and effort.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="calm-section calm-banners">
+    <div class="section-label">Calm Visual Banners</div>
+    <h2 class="section-title">BREATHE IN<br>THE SILENCE</h2>
+    <p class="section-sub" style="margin-bottom:1.5rem">Click the banner to start a peaceful breathing session.</p>
+    <div class="calm-banner-grid">
+      <button class="calm-banner b1 breathe-trigger" type="button" aria-label="Start breathing session"></button>
+    </div>
+  </section>
+
+  <section id="why" class="calm-section">
+    <div class="section-label">Why Mantras Matter</div>
+    <h2 class="section-title">WORDS BECOME<br>YOUR STATE</h2>
+    <div class="calm-grid">
+      <div class="calm-card">
+        <div class="calm-card-title">Attention Control</div>
+        <p>A focused mantra interrupts spiraling thoughts and returns your mind to one clear action.</p>
+      </div>
+      <div class="calm-card">
+        <div class="calm-card-title">Stress Regulation</div>
+        <p>Gentle self-talk lowers inner noise and helps your body shift from panic to calm response.</p>
+      </div>
+      <div class="calm-card">
+        <div class="calm-card-title">Identity Reinforcement</div>
+        <p>What you repeat daily becomes who you believe you are under pressure.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="self-talk" class="calm-section">
+    <div class="section-label">Self Dialogue</div>
+    <h2 class="section-title">TALK TO<br>YOURSELF<br>WITH RESPECT</h2>
+    <div class="calm-card wide">
+      <p>
+        Inner peace is not the absence of challenge. It is the presence of a calm inner voice.
+        In hard moments, replace self-attack with clear instruction:
+        <strong>"Breathe. Reset. One step now."</strong>
+      </p>
+      <p>
+        The mind believes what it hears repeatedly. Daily positive self-talk can turn fear into discipline
+        and pressure into centered action.
+      </p>
+    </div>
+  </section>
+
+  <section id="heroes" class="calm-section">
+    <div class="section-label">Examples</div>
+    <h2 class="section-title">HEROES WHO<br>USED INNER<br>DISCIPLINE</h2>
+    <div class="hero-examples">
+      <div class="hero-example-card">
+        <img src="assets/heroes/lao-tzu-real.png" alt="Portrait of Lao Tzu" />
+        <div class="hero-example-name">Lao Tzu</div>
+        <p>"Mastering others is strength. Mastering yourself is true power."</p>
+      </div>
+      <div class="hero-example-card">
+        <img src="assets/heroes/miyamoto-real.png" alt="Portrait of Miyamoto Musashi" />
+        <div class="hero-example-name">Miyamoto Musashi</div>
+        <p>Calm repetition and self-command were central to his philosophy of mastery.</p>
+      </div>
+      <div class="hero-example-card">
+        <img src="assets/heroes/bruce-lee-real.png" alt="Portrait of Bruce Lee" />
+        <div class="hero-example-name">Bruce Lee</div>
+        <p>"Do not pray for an easy life. Pray for the strength to endure a difficult one."</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">GRIT</div>
+    <div class="footer-copy">Calm mind. Strong action.</div>
+  </footer>
+
+  <div class="breath-panel" id="breathPanel" aria-hidden="true">
+    <div class="breath-card">
+      <div class="result-label">Breathing Session</div>
+      <div class="breath-circle-wrap">
+        <div class="breath-circle-ring"></div>
+        <div class="breath-circle" id="breathCircle">
+          <div class="breath-phase" id="breathPhase">INHALE →</div>
+          <div class="breath-count" id="breathCount">4</div>
+        </div>
+      </div>
+      <div class="breath-meta">Cycle: <span id="breathCycle">1</span> · Elapsed: <span id="breathElapsed">00:00</span></div>
+      <div class="breath-actions">
+        <button class="btn-primary" id="breathStopBtn" type="button">Stop Session</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="mantras-calm.js"></script>
+</body>
+</html>
