@@ -234,12 +234,34 @@ function getCoachCelebration(mode) {
   return 'Steady Mode active. Consistency is your advantage.';
 }
 
-function downloadFile(filename, content, mimeType) {
+async function downloadFile(filename, content, mimeType) {
   const blob = new Blob([content], { type: mimeType });
+  const safeType = (mimeType || 'text/plain').split(';')[0];
+  const file = new File([blob], filename, { type: safeType });
+
+  // Best mobile UX: share sheet with file attachment.
+  if (
+    navigator.share &&
+    navigator.canShare &&
+    navigator.canShare({ files: [file] })
+  ) {
+    try {
+      await navigator.share({
+        files: [file],
+        title: filename,
+        text: `Export from GRIT: ${filename}`
+      });
+      return { ok: true, mode: 'share' };
+    } catch (err) {
+      if (err && err.name === 'AbortError') return { ok: false, mode: 'cancelled' };
+      // Continue to fallback download path.
+    }
+  }
+
   // Mobile browsers can block direct download clicks from synthetic events.
   if (window.navigator && typeof window.navigator.msSaveOrOpenBlob === 'function') {
     window.navigator.msSaveOrOpenBlob(blob, filename);
-    return;
+    return { ok: true, mode: 'ms' };
   }
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -250,13 +272,13 @@ function downloadFile(filename, content, mimeType) {
   a.click();
   a.remove();
   if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-    setTimeout(() => {
-      window.open(url, '_blank');
-    }, 120);
+    const popup = window.open(url, '_blank');
+    if (!popup) window.location.href = url;
   }
   setTimeout(() => {
     URL.revokeObjectURL(url);
   }, 1200);
+  return { ok: true, mode: 'download' };
 }
 
 function buildCoachTextSummary(challengeTitle, challengeDays, entry, dayValue, mode) {
@@ -405,6 +427,8 @@ function initChallengePage() {
   const carouselTrack = document.getElementById('challengeCarouselTrack');
   const carouselPrevBtn = document.getElementById('carouselPrevBtn');
   const carouselNextBtn = document.getElementById('carouselNextBtn');
+  const coachInfoBtn = document.getElementById('coachInfoBtn');
+  const coachInfoPop = document.getElementById('coachInfoPop');
 
   let selectedMood = null;
   let selectedTrigger = null;
@@ -566,6 +590,21 @@ function initChallengePage() {
       return;
     }
 
+    const draftMood = selectedMood || coachEntry.mood || null;
+    const draftTrigger = selectedTrigger || coachEntry.trigger || null;
+    const draftObstacle = selectedObstacle || coachEntry.obstacle || null;
+    const draftSupport = selectedSupport || coachEntry.supportSystem || null;
+    const draftMotivation = motivationInput ? motivationInput.value.trim() : (coachEntry.motivation || '');
+    const draftCause = challengeCauseInput ? challengeCauseInput.value.trim() : (coachEntry.challengeCause || '');
+    const draftReflection = reflectionInput ? reflectionInput.value.trim() : (coachEntry.reflection || '');
+    const hasContext =
+      Boolean(draftMood || draftTrigger || draftObstacle || draftSupport) ||
+      Boolean(draftMotivation || draftCause || draftReflection);
+    if (!hasContext) {
+      celebrateJourney('Add at least one check-in input (mood, trigger, obstacle, support, or a short note) before saving.');
+      return;
+    }
+
     const wins = Array.isArray(coachEntry.wins) ? [...coachEntry.wins] : [];
     if (winInput && winInput.value.trim()) {
       wins.push(winInput.value.trim());
@@ -621,27 +660,37 @@ function initChallengePage() {
   }
 
   if (exportSummaryBtn) {
-    exportSummaryBtn.addEventListener('click', (e) => {
+    exportSummaryBtn.addEventListener('click', async (e) => {
       e.preventDefault();
-      const entry = readCoachEntry(challengeDays);
+      let entry = readCoachEntry(challengeDays);
       if (!entry) {
-        celebrateJourney('Save one check-in first, then export.');
+        saveCoachEntry();
+        entry = readCoachEntry(challengeDays);
+      }
+      if (!entry) {
+        celebrateJourney('Save a valid check-in first, then export.');
         return;
       }
       const dayVal = readChallengeDay(challengeDays);
       const mode = computeCoachMode(entry, dayVal || 1, challengeDays);
       const text = buildCoachTextSummary(pageTitle || 'Challenge', challengeDays, entry, dayVal, mode);
-      downloadFile(`grit-${challengeDays}-day-summary.txt`, text, 'text/plain;charset=utf-8');
-      celebrateJourney('Summary exported.');
+      const res = await downloadFile(`grit-${challengeDays}-day-summary.txt`, text, 'text/plain;charset=utf-8');
+      if (res && res.mode === 'share') celebrateJourney('Summary ready in share sheet.');
+      else if (res && res.mode === 'cancelled') celebrateJourney('Export cancelled.');
+      else celebrateJourney('Summary exported.');
     });
   }
 
   if (exportJsonBtn) {
-    exportJsonBtn.addEventListener('click', (e) => {
+    exportJsonBtn.addEventListener('click', async (e) => {
       e.preventDefault();
-      const entry = readCoachEntry(challengeDays);
+      let entry = readCoachEntry(challengeDays);
       if (!entry) {
-        celebrateJourney('Save one check-in first, then export.');
+        saveCoachEntry();
+        entry = readCoachEntry(challengeDays);
+      }
+      if (!entry) {
+        celebrateJourney('Save a valid check-in first, then export.');
         return;
       }
       const payload = {
@@ -649,8 +698,18 @@ function initChallengePage() {
         day: readChallengeDay(challengeDays),
         exportedAt: new Date().toISOString()
       };
-      downloadFile(`grit-${challengeDays}-day-data.json`, JSON.stringify(payload, null, 2), 'application/json;charset=utf-8');
-      celebrateJourney('JSON exported.');
+      const res = await downloadFile(`grit-${challengeDays}-day-data.json`, JSON.stringify(payload, null, 2), 'application/json;charset=utf-8');
+      if (res && res.mode === 'share') celebrateJourney('JSON ready in share sheet.');
+      else if (res && res.mode === 'cancelled') celebrateJourney('Export cancelled.');
+      else celebrateJourney('JSON exported.');
+    });
+  }
+
+  if (coachInfoBtn && coachInfoPop) {
+    coachInfoBtn.addEventListener('click', () => {
+      const isHidden = coachInfoPop.hasAttribute('hidden');
+      if (isHidden) coachInfoPop.removeAttribute('hidden');
+      else coachInfoPop.setAttribute('hidden', 'hidden');
     });
   }
 
