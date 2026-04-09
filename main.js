@@ -1214,13 +1214,6 @@ function copyMantra() {
   const links = nav ? nav.querySelector('.nav-links') : null;
   if (!nav || !logo || !links) return;
 
-  const hamburger = document.createElement('button');
-  hamburger.type = 'button';
-  hamburger.className = 'nav-hamburger';
-  hamburger.setAttribute('aria-label', 'Open menu');
-  hamburger.textContent = '☰';
-  nav.appendChild(hamburger);
-
   const drawer = document.createElement('aside');
   drawer.className = 'mobile-nav-drawer';
   drawer.setAttribute('aria-hidden', 'true');
@@ -1258,11 +1251,6 @@ function copyMantra() {
     if (drawer.classList.contains('open')) closeMenu();
     else openMenu();
   }
-
-  hamburger.addEventListener('click', (e) => {
-    e.preventDefault();
-    toggleMenu();
-  });
 
   logo.addEventListener('click', (e) => {
     if (!isMobileView()) return;
