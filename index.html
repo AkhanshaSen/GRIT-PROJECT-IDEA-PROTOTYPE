@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GRIT — Find Your Fire. Never Stop.</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     NAV
+══════════════════════════════════════ -->
+<nav>
+  <a class="nav-logo" href="#">GRIT</a>
+  <ul class="nav-links">
+    <li><a href="#pillars">About</a></li>
+    <li><a href="#interests">Find Your Fire</a></li>
+    <li><a href="#mantras">Mantras</a></li>
+    <li><a href="#challenge">Challenges</a></li>
+    <li><a href="#cta">Start</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-bg-grid"></div>
+
+  <div class="hero-left">
+    <div class="hero-label">Discover · Grow · Grind — For Teens &amp; Young Adults</div>
+    <h1>FIND YOUR<br><span>FIRE.</span><br>NEVER STOP.</h1>
+    <p class="hero-sub">
+      GRIT is the platform that helps you
+      <strong style="color:var(--white);font-weight:500">discover what you're passionate about</strong>,
+      build rock-solid habits around it, and keep grinding — fuelled by limitless mantras
+      and a community that refuses to quit.
+    </p>
+    <div>
+      <a href="#challenge" class="btn-primary">Start 30-Day Challenge</a>
+      <a href="#pillars"   class="btn-ghost">Learn More</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-card">
+      <div class="today-label">Today's Grit Tasks</div>
+      <p class="today-task">Do 5 more reps when you feel like stopping. That's where growth lives.</p>
+
+      <div class="habit-list" id="habitList">
+        <div class="habit-item" onclick="toggleHabit(this)">
+          <div class="habit-check">✓</div>
+          <span class="habit-text">Wake up without hitting snooze</span>
+        </div>
+        <div class="habit-item" onclick="toggleHabit(this)">
+          <div class="habit-check">✓</div>
+          <span class="habit-text">Do one hard task before social media</span>
+        </div>
+        <div class="habit-item" onclick="toggleHabit(this)">
+          <div class="habit-check">✓</div>
+          <span class="habit-text">Drink 2L of water today</span>
+        </div>
+        <div class="habit-item" onclick="toggleHabit(this)">
+          <div class="habit-check">✓</div>
+          <span class="habit-text">10 minutes of deep focus reading</span>
+        </div>
+      </div>
+
+      <div class="streak-bar">
+        <div class="streak-row">
+          <span class="streak-label">Current Streak</span>
+          <span class="streak-count" id="streakCount">7 🔥</span>
+        </div>
+        <div class="streak-dots" id="streakDots"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     STATS
+══════════════════════════════════════ -->
+<section id="stats">
+  <div>
+    <div class="stat-num">21K+</div>
+    <div class="stat-desc">Active Challengers</div>
+  </div>
+  <div>
+    <div class="stat-num">84%</div>
+    <div class="stat-desc">Complete the 30-Day Sprint</div>
+  </div>
+  <div>
+    <div class="stat-num">66</div>
+    <div class="stat-desc">Days to Build a Real Habit</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     PILLARS
+══════════════════════════════════════ -->
+<section id="pillars">
+  <div class="section-label">The System</div>
+  <h2 class="section-title">ONE PLATFORM.<br>THREE SUPERPOWERS.</h2>
+  <p class="section-sub">
+    We don't just hand you habits. We help you find what actually lights you up
+    — then build an unbreakable system around it.
+  </p>
+
+  <div class="pillars-grid">
+    <div class="pillar-card">
+      <div class="pillar-icon">🔍</div>
+      <div class="pillar-title">Interest Finder</div>
+      <p class="pillar-desc">
+        Not sure what your passion is? Take our guided spark quiz. We map your curiosity,
+        energy, and values to real paths — sports, arts, tech, nature, leadership, and beyond.
+      </p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">⚡</div>
+      <div class="pillar-title">Habit Engine</div>
+      <p class="pillar-desc">
+        Daily micro-habits with streak tracking. From "no-snooze" sprints to deep work blocks
+        — small wins stack into life-changing momentum, tailored to your interest.
+      </p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">🔥</div>
+      <div class="pillar-title">Limitless Mantras</div>
+      <p class="pillar-desc">
+        Every day, a fresh mantra to fuel your grind. Positive, powerful, and personalised
+        to where you are in your journey. Words that push you when nothing else does.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     MANTRA TICKER
+══════════════════════════════════════ -->
+<div id="mantra-ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">You are limitless</span>
+    <span class="ticker-item">The grind never lies</span>
+    <span class="ticker-item">Progress over perfection</span>
+    <span class="ticker-item">Your potential is infinite</span>
+    <span class="ticker-item">One more rep. One more page. One more day.</span>
+    <span class="ticker-item">Winners are made in the moments nobody sees</span>
+    <span class="ticker-item">Discipline is freedom</span>
+    <span class="ticker-item">You become what you repeatedly do</span>
+    <!-- duplicate set for seamless loop -->
+    <span class="ticker-item">You are limitless</span>
+    <span class="ticker-item">The grind never lies</span>
+    <span class="ticker-item">Progress over perfection</span>
+    <span class="ticker-item">Your potential is infinite</span>
+    <span class="ticker-item">One more rep. One more page. One more day.</span>
+    <span class="ticker-item">Winners are made in the moments nobody sees</span>
+    <span class="ticker-item">Discipline is freedom</span>
+    <span class="ticker-item">You become what you repeatedly do</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     INTEREST FINDER / SPARK QUIZ
+══════════════════════════════════════ -->
+<section id="interests">
+  <div class="interests-inner">
+    <div class="section-label">Spark Quiz</div>
+    <h2 class="section-title">FIND YOUR<br>FIRE</h2>
+    <p class="section-sub">
+      Not sure what you're passionate about yet? Answer 3 quick questions and we'll
+      point you to your path — then build your habits around it.
+    </p>
+
+    <div class="interest-quiz">
+
+      <!-- Step 1 -->
+      <div class="quiz-step active" id="step1">
+        <div class="quiz-q">What drains your energy the least?</div>
+        <div class="quiz-hint">Pick the one that feels most natural to you</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="selectOpt(this,'energy','body')">
+            <span class="quiz-opt-icon">💪</span> Moving my body — sports, gym, dance
+          </div>
+          <div class="quiz-opt" onclick="selectOpt(this,'energy','mind')">
+            <span class="quiz-opt-icon">🧩</span> Solving problems — code, puzzles, strategy
+          </div>
+          <div class="quiz-opt" onclick="selectOpt(this,'energy','create')">
+            <span class="quiz-opt-icon">🎨</span> Creating things — art, music, writing
+          </div>
+          <div class="quiz-opt" onclick="selectOpt(this,'energy','people')">
+            <span class="quiz-opt-icon">🤝</span> Connecting — leading, helping, teaching
+          </div>
+        </div>
+        <div class="quiz-nav">
+          <span class="quiz-progress">STEP 1 OF 3</span>
+          <button class="btn-primary" onclick="nextStep(2)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="quiz-step" id="step2">
+        <div class="quiz-q">What would you do if no one was watching?</div>
+        <div class="quiz-hint">The thing you'd do for free, just because</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="selectOpt(this,'free','train')">
+            <span class="quiz-opt-icon">🏃</span> Train, compete, or push my physical limits
+          </div>
+          <div class="quiz-opt" onclick="selectOpt(this,'free','build')">
+            <span class="quiz-opt-icon">🛠</span> Build or design something from scratch
+          </div>
+          <div class="quiz-opt" onclick="selectOpt(this,'free','explore')">
+            <span class="quiz-opt-icon">🌍</span> Explore nature or understand the world
+          </div>
+          <div class="quiz-opt" onclick="selectOpt(this,'free','express')">
+            <span class="quiz-opt-icon">🎭</span> Perform, express, or entertain
+          </div>
+        </div>
+        <div class="quiz-nav">
+          <span class="quiz-progress">STEP 2 OF 3</span>
+          <button class="btn-primary" onclick="nextStep(3)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="quiz-step" id="step3">
+        <div class="quiz-q">What kind of win would feel the best?</div>
+        <div class="quiz-hint">Imagine yourself a year from now</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="selectOpt(this,'win','compete')">
+            <span class="quiz-opt-icon">🏆</span> Winning a competition or hitting a PR
+          </div>
+          <div class="quiz-opt" onclick="selectOpt(this,'win','launch')">
+            <span class="quiz-opt-icon">🚀</span> Launching something I built
+          </div>
+          <div class="quiz-opt" onclick="selectOpt(this,'win','impact')">
+            <span class="quiz-opt-icon">❤️</span> Seeing someone I helped succeed
+          </div>
+          <div class="quiz-opt" onclick="selectOpt(this,'win','mastery')">
+            <span class="quiz-opt-icon">🎯</span> Mastering a craft I'm proud of
+          </div>
+        </div>
+        <div class="quiz-nav">
+          <span class="quiz-progress">STEP 3 OF 3</span>
+          <button class="btn-primary" onclick="showResult()">Reveal My Path 🔥</button>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="quiz-result" id="quizResult">
+        <div class="result-label">Your Spark Path</div>
+        <div class="result-title" id="resultTitle">THE ATHLETE</div>
+        <p class="result-desc" id="resultDesc"></p>
+        <div class="result-habits" id="resultHabits"></div>
+        <button class="btn-primary" onclick="resetQuiz()">Retake Quiz</button>
+        <a href="#challenge" class="btn-ghost" style="margin-left:1rem">Start My Challenge →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     MANTRAS
+══════════════════════════════════════ -->
+<section id="mantras">
+  <div class="section-label">Daily Fuel</div>
+  <h2 class="section-title">LIMITLESS<br>MANTRAS</h2>
+  <p class="section-sub">A mantra a day keeps the doubt away. Hit refresh for your next dose of limitless energy.</p>
+
+  <div class="mantra-display">
+    <div class="mantra-text" id="mantraText">YOUR ONLY COMPETITION IS WHO YOU WERE YESTERDAY.</div>
+    <div class="mantra-sub"  id="mantraSub">On days it feels impossible — this is the truth.</div>
+  </div>
+
+  <div class="mantra-controls">
+    <button class="btn-primary" onclick="nextMantra()">New Mantra 🔥</button>
+    <button class="btn-ghost"   onclick="copyMantra()">Copy It</button>
+  </div>
+
+  <div class="mantra-grid">
+    <div class="mantra-card">"You don't rise to the level of your goals. You fall to the level of your systems."</div>
+    <div class="mantra-card">"The pain of discipline is nothing compared to the pain of regret."</div>
+    <div class="mantra-card">"Every expert was once a beginner who refused to quit."</div>
+    <div class="mantra-card">"Your future self is watching you right now through your memories."</div>
+    <div class="mantra-card">"Hard work is the silent language that everyone understands."</div>
+    <div class="mantra-card">"The grind doesn't stop. Neither do you."</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SCIENCE
+══════════════════════════════════════ -->
+<section id="science">
+  <div class="science-inner">
+    <div>
+      <div class="science-quote">
+        "Effort counts <em>twice.</em> Talent × Effort = Skill.
+        Skill × Effort = <em>Achievement.</em>"
+      </div>
+      <div class="science-attr">— Angela Duckworth, Grit: The Power of Passion &amp; Perseverance</div>
+    </div>
+    <div class="science-facts">
+      <div class="fact-card">
+        <div class="fact-title">The Dip Is Real</div>
+        <div class="fact-body">
+          Every skill has a plateau where most people quit. The learning curve dips before it rises.
+          Those who push through The Dip are the ones who make it.
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-title">Neuroplasticity Is On Your Side</div>
+        <div class="fact-body">
+          Your brain physically rewires itself through repeated action. Every time you do the hard thing,
+          you strengthen that neural pathway. Discipline is literally brain training.
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-title">Identity Over Willpower</div>
+        <div class="fact-body">
+          Willpower runs out. Identity doesn't. Stop saying "I want to exercise" — start saying
+          "I am someone who moves every day." Behavior follows belief.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CHALLENGES
+══════════════════════════════════════ -->
+<section id="challenge">
+  <div class="section-label">Choose Your Path</div>
+  <h2 class="section-title">PICK YOUR<br>CHALLENGE</h2>
+  <p class="section-sub">Every journey starts with a single commitment. Which one are you ready to make?</p>
+
+  <div class="challenge-grid">
+    <div class="challenge-card">
+      <div class="ch-days">7</div>
+      <div class="ch-title">The Ignition Sprint</div>
+      <p class="ch-desc">
+        Perfect for first-timers. One habit, every day, for 7 days.
+        Prove to yourself that you can show up — even when you don't feel like it.
+      </p>
+      <span class="ch-tag">Beginner</span>
+    </div>
+    <div class="challenge-card">
+      <div class="ch-days">21</div>
+      <div class="ch-title">The Momentum Builder</div>
+      <p class="ch-desc">
+        Three weeks of stacked habits — morning routine, focused study block,
+        and a daily movement practice. This is where patterns form.
+      </p>
+      <span class="ch-tag">Intermediate</span>
+    </div>
+    <div class="challenge-card">
+      <div class="ch-days">30</div>
+      <div class="ch-title">The Grit Sprint</div>
+      <p class="ch-desc">
+        Our flagship challenge. Five daily habits, community accountability, and weekly check-ins.
+        84% of those who start, finish. Are you in that 84%?
+      </p>
+      <span class="ch-tag">Core Program</span>
+    </div>
+    <div class="challenge-card">
+      <div class="ch-days">66</div>
+      <div class="ch-title">The Identity Shift</div>
+      <p class="ch-desc">
+        Science says 66 days to build a real habit. This isn't a challenge — it's a transformation.
+        For those who are serious about who they're becoming.
+      </p>
+      <span class="ch-tag">Advanced</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     WALL OF WINS
+══════════════════════════════════════ -->
+<section id="wins">
+  <div class="wins-inner">
+    <div class="section-label">The Arena</div>
+    <h2 class="section-title">WALL OF<br>WINS</h2>
+    <p class="section-sub">
+      Real people. Real struggle. Real growth.
+      The stories that matter aren't the highlight reels — they're the ones from The Dip.
+    </p>
+
+    <div class="wins-grid">
+      <div class="win-card">
+        <div class="win-meta">
+          <div class="win-avatar">A</div>
+          <div>
+            <div class="win-name">Arjun, 17</div>
+            <div class="win-streak">🔥 23-day streak</div>
+          </div>
+        </div>
+        <p class="win-text">
+          "I failed the first three days. Completely. Then I just started again without making it a
+          big deal. That shift in attitude changed everything for me."
+        </p>
+        <span class="win-badge">✓ 30-Day Sprint Complete</span>
+      </div>
+
+      <div class="win-card">
+        <div class="win-meta">
+          <div class="win-avatar" style="background:var(--green)">S</div>
+          <div>
+            <div class="win-name">Sofia, 22</div>
+            <div class="win-streak">🔥 41-day streak</div>
+          </div>
+        </div>
+        <p class="win-text">
+          "I used to rely on 'feeling motivated'. Now I just follow the system. It's boring.
+          It works. I'm a different person than I was 40 days ago."
+        </p>
+        <span class="win-badge">✓ Identity Shift — Week 5</span>
+      </div>
+
+      <div class="win-card">
+        <div class="win-meta">
+          <div class="win-avatar" style="background:#5a6fa8">K</div>
+          <div>
+            <div class="win-name">Kabir, 19</div>
+            <div class="win-streak">🔥 16-day streak</div>
+          </div>
+        </div>
+        <p class="win-text">
+          "The 'do 5 more' rule is insane. I thought it was cheesy. But those 5 extra minutes of
+          study every day are compounding in ways I never expected."
+        </p>
+        <span class="win-badge">✓ Momentum Builder — Day 16</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CTA
+══════════════════════════════════════ -->
+<section id="cta">
+  <div class="cta-bg"></div>
+  <div class="cta-inner">
+    <h2 class="cta-title">START<br>TODAY.</h2>
+    <p class="cta-sub">
+      Your future self is built in the moments you choose to do the hard thing.
+      This is one of those moments.
+    </p>
+    <div class="cta-input-row">
+      <input class="cta-input" type="email" placeholder="your@email.com" />
+      <button class="btn-primary" style="white-space:nowrap">Join Free →</button>
+    </div>
+    <p class="cta-note">No spam. No noise. Just your daily grit nudge.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer>
+  <div class="footer-logo">GRIT</div>
+  <div class="footer-copy">© 2026 GRIT. Built for those who refuse to quit.</div>
+</footer>
+
+<!-- JavaScript -->
+<script src="main.js"></script>
+
+</body>
+</html>
