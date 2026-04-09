@@ -236,21 +236,27 @@ function getCoachCelebration(mode) {
 
 function downloadFile(filename, content, mimeType) {
   const blob = new Blob([content], { type: mimeType });
+  // Mobile browsers can block direct download clicks from synthetic events.
+  if (window.navigator && typeof window.navigator.msSaveOrOpenBlob === 'function') {
+    window.navigator.msSaveOrOpenBlob(blob, filename);
+    return;
+  }
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
   a.download = filename;
+  a.rel = 'noopener';
   document.body.appendChild(a);
   a.click();
   a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1200);
-
-  // Mobile/webview fallback where `download` may be ignored.
-  setTimeout(() => {
-    if (document.visibilityState === 'visible') {
+  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    setTimeout(() => {
       window.open(url, '_blank');
-    }
-  }, 120);
+    }, 120);
+  }
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+  }, 1200);
 }
 
 function buildCoachTextSummary(challengeTitle, challengeDays, entry, dayValue, mode) {
@@ -1217,10 +1223,13 @@ function copyMantra() {
   const drawer = document.createElement('aside');
   drawer.className = 'mobile-nav-drawer';
   drawer.setAttribute('aria-hidden', 'true');
-  const linkMarkup = Array.from(links.querySelectorAll('a'))
-    .map(a => `<a href="${a.getAttribute('href') || '#'}">${a.textContent || ''}</a>`)
-    .join('');
-  drawer.innerHTML = `<a class="mobile-nav-brand" href="index.html">GRIT</a>${linkMarkup}`;
+  const linksHTML = links.innerHTML;
+  drawer.innerHTML =
+    `<div class="mobile-nav-header">` +
+    `<a class="nav-logo" href="#">GRIT</a>` +
+    `<button class="mobile-nav-close" type="button" aria-label="Close menu">×</button>` +
+    `</div>` +
+    `<ul>${linksHTML}</ul>`;
 
   const backdrop = document.createElement('div');
   backdrop.className = 'mobile-nav-backdrop';
@@ -1258,6 +1267,8 @@ function copyMantra() {
     toggleMenu();
   });
 
+  const closeBtn = drawer.querySelector('.mobile-nav-close');
+  if (closeBtn) closeBtn.addEventListener('click', closeMenu);
   backdrop.addEventListener('click', closeMenu);
   drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
   window.addEventListener('resize', () => {

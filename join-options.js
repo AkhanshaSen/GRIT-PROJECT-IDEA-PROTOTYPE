@@ -4,14 +4,16 @@
   const links = nav ? nav.querySelector('.nav-links') : null;
   if (!nav || !logo || !links) return;
 
-
   const drawer = document.createElement('aside');
   drawer.className = 'mobile-nav-drawer';
   drawer.setAttribute('aria-hidden', 'true');
-  const linkMarkup = Array.from(links.querySelectorAll('a'))
-    .map(a => `<a href="${a.getAttribute('href') || '#'}">${a.textContent || ''}</a>`)
-    .join('');
-  drawer.innerHTML = `<a class="mobile-nav-brand" href="index.html">GRIT</a>${linkMarkup}`;
+  const linksHTML = links.innerHTML;
+  drawer.innerHTML =
+    `<div class="mobile-nav-header">` +
+    `<a class="nav-logo" href="index.html">GRIT</a>` +
+    `<button class="mobile-nav-close" type="button" aria-label="Close menu">×</button>` +
+    `</div>` +
+    `<ul>${linksHTML}</ul>`;
 
   const backdrop = document.createElement('div');
   backdrop.className = 'mobile-nav-backdrop';
@@ -47,6 +49,8 @@
     e.preventDefault();
     toggleMenu();
   });
+  const closeBtn = drawer.querySelector('.mobile-nav-close');
+  if (closeBtn) closeBtn.addEventListener('click', closeMenu);
   backdrop.addEventListener('click', closeMenu);
   drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
   window.addEventListener('resize', () => {
