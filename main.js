@@ -1505,11 +1505,11 @@ function copyMantra() {
   );
 
   targets.forEach(el => {
-    el.style.opacity    = '0';
-    el.style.transform  = 'translateY(24px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-  });
+      el.style.opacity    = '0';
+      el.style.transform  = 'translateY(24px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
 })();
 
 /* ── CHALLENGE SELECTOR (affects hero copy only) ── */
