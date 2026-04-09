@@ -185,24 +185,35 @@
 
     <div class="interest-quiz">
 
-      <!-- Step 1 -->
-      <div class="quiz-step active" id="step1">
-        <div class="quiz-q">What drains your energy the least?</div>
-        <div class="quiz-hint">Pick the one that feels most natural to you</div>
+      <!-- Step 0 -->
+      <div class="quiz-step active" id="step0">
+        <div class="quiz-q">What topic should your quiz focus on?</div>
+        <div class="quiz-hint">Choose your lane first, then get a personal spark path</div>
         <div class="quiz-options">
-          <div class="quiz-opt" onclick="selectOpt(this,'energy','body')">
-            <span class="quiz-opt-icon">💪</span> Moving my body — sports, gym, dance
+          <div class="quiz-opt" onclick="selectQuizTopic(this,'performance')">
+            <span class="quiz-opt-icon">🏋️</span> Performance & fitness
           </div>
-          <div class="quiz-opt" onclick="selectOpt(this,'energy','mind')">
-            <span class="quiz-opt-icon">🧩</span> Solving problems — code, puzzles, strategy
+          <div class="quiz-opt" onclick="selectQuizTopic(this,'career')">
+            <span class="quiz-opt-icon">💼</span> Career & business
           </div>
-          <div class="quiz-opt" onclick="selectOpt(this,'energy','create')">
-            <span class="quiz-opt-icon">🎨</span> Creating things — art, music, writing
+          <div class="quiz-opt" onclick="selectQuizTopic(this,'creativity')">
+            <span class="quiz-opt-icon">🎨</span> Creativity & expression
           </div>
-          <div class="quiz-opt" onclick="selectOpt(this,'energy','people')">
-            <span class="quiz-opt-icon">🤝</span> Connecting — leading, helping, teaching
+          <div class="quiz-opt" onclick="selectQuizTopic(this,'leadership')">
+            <span class="quiz-opt-icon">🤝</span> Leadership & impact
           </div>
         </div>
+        <div class="quiz-nav">
+          <span class="quiz-progress">STEP 0 OF 3</span>
+          <button class="btn-primary" onclick="nextStep(1)">Start Quiz →</button>
+        </div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="quiz-step" id="step1">
+        <div class="quiz-q"></div>
+        <div class="quiz-hint"></div>
+        <div class="quiz-options"></div>
         <div class="quiz-nav">
           <span class="quiz-progress">STEP 1 OF 3</span>
           <button class="btn-primary" onclick="nextStep(2)">Next →</button>
@@ -211,22 +222,9 @@
 
       <!-- Step 2 -->
       <div class="quiz-step" id="step2">
-        <div class="quiz-q">What would you do if no one was watching?</div>
-        <div class="quiz-hint">The thing you'd do for free, just because</div>
-        <div class="quiz-options">
-          <div class="quiz-opt" onclick="selectOpt(this,'free','train')">
-            <span class="quiz-opt-icon">🏃</span> Train, compete, or push my physical limits
-          </div>
-          <div class="quiz-opt" onclick="selectOpt(this,'free','build')">
-            <span class="quiz-opt-icon">🛠</span> Build or design something from scratch
-          </div>
-          <div class="quiz-opt" onclick="selectOpt(this,'free','explore')">
-            <span class="quiz-opt-icon">🌍</span> Explore nature or understand the world
-          </div>
-          <div class="quiz-opt" onclick="selectOpt(this,'free','express')">
-            <span class="quiz-opt-icon">🎭</span> Perform, express, or entertain
-          </div>
-        </div>
+        <div class="quiz-q"></div>
+        <div class="quiz-hint"></div>
+        <div class="quiz-options"></div>
         <div class="quiz-nav">
           <span class="quiz-progress">STEP 2 OF 3</span>
           <button class="btn-primary" onclick="nextStep(3)">Next →</button>
@@ -235,22 +233,9 @@
 
       <!-- Step 3 -->
       <div class="quiz-step" id="step3">
-        <div class="quiz-q">What kind of win would feel the best?</div>
-        <div class="quiz-hint">Imagine yourself a year from now</div>
-        <div class="quiz-options">
-          <div class="quiz-opt" onclick="selectOpt(this,'win','compete')">
-            <span class="quiz-opt-icon">🏆</span> Winning a competition or hitting a PR
-          </div>
-          <div class="quiz-opt" onclick="selectOpt(this,'win','launch')">
-            <span class="quiz-opt-icon">🚀</span> Launching something I built
-          </div>
-          <div class="quiz-opt" onclick="selectOpt(this,'win','impact')">
-            <span class="quiz-opt-icon">❤️</span> Seeing someone I helped succeed
-          </div>
-          <div class="quiz-opt" onclick="selectOpt(this,'win','mastery')">
-            <span class="quiz-opt-icon">🎯</span> Mastering a craft I'm proud of
-          </div>
-        </div>
+        <div class="quiz-q"></div>
+        <div class="quiz-hint"></div>
+        <div class="quiz-options"></div>
         <div class="quiz-nav">
           <span class="quiz-progress">STEP 3 OF 3</span>
           <button class="btn-primary" onclick="showResult()">Reveal My Path 🔥</button>
