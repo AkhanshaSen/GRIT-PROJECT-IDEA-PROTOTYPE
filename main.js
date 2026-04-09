@@ -485,27 +485,27 @@ function initChallengePage() {
   let selectedObstacle = null;
   let selectedSupport = null;
   let coachEntry = readCoachEntry(challengeDays) || {};
+  let coachInteracted = false;
 
   function validateCoachInputs() {
     const dayVal = readChallengeDay(challengeDays);
-    const winsExisting = Array.isArray(coachEntry.wins) ? coachEntry.wins : [];
     const winsPending = winInput && winInput.value.trim() ? [winInput.value.trim()] : [];
 
     const hasSelection =
-      Boolean(selectedMood || coachEntry.mood) ||
-      Boolean(selectedTrigger || coachEntry.trigger) ||
-      Boolean(selectedObstacle || coachEntry.obstacle) ||
-      Boolean(selectedSupport || coachEntry.supportSystem);
+      Boolean(selectedMood) ||
+      Boolean(selectedTrigger) ||
+      Boolean(selectedObstacle) ||
+      Boolean(selectedSupport);
 
     const hasContextText =
-      Boolean((motivationInput && motivationInput.value.trim()) || coachEntry.motivation) ||
-      Boolean((challengeCauseInput && challengeCauseInput.value.trim()) || coachEntry.challengeCause) ||
-      Boolean((reflectionInput && reflectionInput.value.trim()) || coachEntry.reflection) ||
-      winsExisting.length > 0 ||
+      Boolean(motivationInput && motivationInput.value.trim()) ||
+      Boolean(challengeCauseInput && challengeCauseInput.value.trim()) ||
+      Boolean(reflectionInput && reflectionInput.value.trim()) ||
       winsPending.length > 0;
 
     const missing = [];
     if (dayVal === null) missing.push(`Set your challenge day (1 to ${challengeDays}).`);
+    if (!coachInteracted) missing.push('Update at least one coach field in this session before saving/exporting.');
     if (!hasSelection) missing.push('Choose at least one check-in option (mood / trigger / obstacle / support).');
     if (!hasContextText) missing.push('Add motivation, reflection, challenge cause, or at least one win.');
 
@@ -595,39 +595,52 @@ function initChallengePage() {
 
   moodButtons.forEach(btn => {
     btn.addEventListener('click', () => {
+      coachInteracted = true;
       selectMood(btn.getAttribute('data-mood'));
     });
   });
 
   triggerButtons.forEach(btn => {
     btn.addEventListener('click', () => {
+      coachInteracted = true;
       selectTrigger(btn.getAttribute('data-trigger'));
     });
   });
 
   obstacleButtons.forEach(btn => {
     btn.addEventListener('click', () => {
+      coachInteracted = true;
       selectObstacle(btn.getAttribute('data-obstacle'));
     });
   });
 
   supportButtons.forEach(btn => {
     btn.addEventListener('click', () => {
+      coachInteracted = true;
       selectSupport(btn.getAttribute('data-support'));
     });
   });
 
   if (challengeMeterInput && challengeMeterValue) {
     challengeMeterInput.addEventListener('input', () => {
+      coachInteracted = true;
       challengeMeterValue.textContent = String(challengeMeterInput.value);
     });
   }
 
   if (winImpactInput && winImpactValue) {
     winImpactInput.addEventListener('input', () => {
+      coachInteracted = true;
       winImpactValue.textContent = String(winImpactInput.value);
     });
   }
+
+  [motivationInput, challengeCauseInput, reflectionInput, winInput, dayInput].forEach(el => {
+    if (!el) return;
+    el.addEventListener('input', () => {
+      coachInteracted = true;
+    });
+  });
 
   function saveDay() {
     if (!dayInput) return;
@@ -1405,9 +1418,10 @@ function copyMantra() {
   drawer.className = 'mobile-nav-drawer';
   drawer.setAttribute('aria-hidden', 'true');
   const linksHTML = links.innerHTML;
+  const logoText = (logo.textContent || 'GRIT').trim();
   drawer.innerHTML =
     `<div class="mobile-nav-header">` +
-    `<a class="nav-logo" href="#">GRIT</a>` +
+    `<a class="nav-logo mobile-nav-brand" href="#">${logoText}</a>` +
     `<button class="mobile-nav-close" type="button" aria-label="Close menu">×</button>` +
     `</div>` +
     `<ul>${linksHTML}</ul>`;

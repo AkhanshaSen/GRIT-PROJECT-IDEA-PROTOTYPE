@@ -8,9 +8,10 @@
   drawer.className = 'mobile-nav-drawer';
   drawer.setAttribute('aria-hidden', 'true');
   const linksHTML = links.innerHTML;
+  const logoText = (logo.textContent || 'GRIT').trim();
   drawer.innerHTML =
     `<div class="mobile-nav-header">` +
-    `<a class="nav-logo" href="index.html">GRIT</a>` +
+    `<a class="nav-logo mobile-nav-brand" href="index.html">${logoText}</a>` +
     `<button class="mobile-nav-close" type="button" aria-label="Close menu">×</button>` +
     `</div>` +
     `<ul>${linksHTML}</ul>`;

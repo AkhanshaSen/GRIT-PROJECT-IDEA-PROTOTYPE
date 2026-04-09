@@ -348,7 +348,8 @@ nav {
   margin-bottom: 0.8rem;
   padding: 0 0.1rem;
 }
-.mobile-nav-header .nav-logo {
+.mobile-nav-header .nav-logo,
+.mobile-nav-header .mobile-nav-brand {
   display: inline-block;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 2rem;
@@ -358,6 +359,7 @@ nav {
   border-bottom: 0;
   padding: 0;
   margin: 0;
+  line-height: 1;
 }
 .mobile-nav-close {
   width: 34px;
