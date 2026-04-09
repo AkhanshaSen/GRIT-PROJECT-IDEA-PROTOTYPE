@@ -237,10 +237,18 @@ function getCoachCelebration(mode) {
 async function downloadFile(filename, content, mimeType) {
   const blob = new Blob([content], { type: mimeType });
   const safeType = (mimeType || 'text/plain').split(';')[0];
-  const file = new File([blob], filename, { type: safeType });
+  let file = null;
+  try {
+    if (typeof File === 'function') {
+      file = new File([blob], filename, { type: safeType });
+    }
+  } catch {
+    file = null;
+  }
 
   // Best mobile UX: share sheet with file attachment.
   if (
+    file &&
     navigator.share &&
     navigator.canShare &&
     navigator.canShare({ files: [file] })
@@ -435,6 +443,22 @@ function initChallengePage() {
   let selectedObstacle = null;
   let selectedSupport = null;
   let coachEntry = readCoachEntry(challengeDays) || {};
+  const pressState = { lastTouchAt: 0 };
+
+  function bindPress(el, handler) {
+    if (!el || typeof handler !== 'function') return;
+
+    el.addEventListener('touchend', (e) => {
+      pressState.lastTouchAt = Date.now();
+      e.preventDefault();
+      handler(e);
+    }, { passive: false });
+
+    el.addEventListener('click', (e) => {
+      if (Date.now() - pressState.lastTouchAt < 500) return;
+      handler(e);
+    });
+  }
 
   function renderWins(list) {
     if (!winsList) return;
@@ -515,25 +539,25 @@ function initChallengePage() {
   renderCoachOutcome();
 
   moodButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    bindPress(btn, () => {
       selectMood(btn.getAttribute('data-mood'));
     });
   });
 
   triggerButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    bindPress(btn, () => {
       selectTrigger(btn.getAttribute('data-trigger'));
     });
   });
 
   obstacleButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    bindPress(btn, () => {
       selectObstacle(btn.getAttribute('data-obstacle'));
     });
   });
 
   supportButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    bindPress(btn, () => {
       selectSupport(btn.getAttribute('data-support'));
     });
   });
@@ -638,7 +662,7 @@ function initChallengePage() {
   }
 
   if (saveBtn) {
-    saveBtn.addEventListener('click', (e) => {
+    bindPress(saveBtn, (e) => {
       e.preventDefault();
       saveDay();
     });
@@ -653,14 +677,14 @@ function initChallengePage() {
   }
 
   if (coachSaveBtn) {
-    coachSaveBtn.addEventListener('click', (e) => {
+    bindPress(coachSaveBtn, (e) => {
       e.preventDefault();
       saveCoachEntry();
     });
   }
 
   if (exportSummaryBtn) {
-    exportSummaryBtn.addEventListener('click', async (e) => {
+    bindPress(exportSummaryBtn, async (e) => {
       e.preventDefault();
       let entry = readCoachEntry(challengeDays);
       if (!entry) {
@@ -682,7 +706,7 @@ function initChallengePage() {
   }
 
   if (exportJsonBtn) {
-    exportJsonBtn.addEventListener('click', async (e) => {
+    bindPress(exportJsonBtn, async (e) => {
       e.preventDefault();
       let entry = readCoachEntry(challengeDays);
       if (!entry) {
@@ -706,7 +730,7 @@ function initChallengePage() {
   }
 
   if (coachInfoBtn && coachInfoPop) {
-    coachInfoBtn.addEventListener('click', () => {
+    bindPress(coachInfoBtn, () => {
       const isHidden = coachInfoPop.hasAttribute('hidden');
       if (isHidden) coachInfoPop.removeAttribute('hidden');
       else coachInfoPop.setAttribute('hidden', 'hidden');
@@ -726,14 +750,14 @@ function initChallengePage() {
   }
 
   if (chooseAnotherTrigger) {
-    chooseAnotherTrigger.addEventListener('click', (e) => {
+    bindPress(chooseAnotherTrigger, (e) => {
       e.preventDefault();
       openCarousel();
     });
   }
 
   if (carouselCloseBtn) {
-    carouselCloseBtn.addEventListener('click', (e) => {
+    bindPress(carouselCloseBtn, (e) => {
       e.preventDefault();
       closeCarousel();
     });
