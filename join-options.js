@@ -14,7 +14,7 @@
   const drawer = document.createElement('aside');
   drawer.className = 'mobile-nav-drawer';
   drawer.setAttribute('aria-hidden', 'true');
-  drawer.innerHTML = links.innerHTML;
+  drawer.innerHTML = `<a class="mobile-nav-logo" href="#">GRIT</a>${links.innerHTML}`;
 
   const backdrop = document.createElement('div');
   backdrop.className = 'mobile-nav-backdrop';
@@ -55,6 +55,13 @@
     toggleMenu();
   });
   backdrop.addEventListener('click', closeMenu);
+  const drawerLogo = drawer.querySelector('.mobile-nav-logo');
+  if (drawerLogo) {
+    drawerLogo.addEventListener('click', (e) => {
+      if (isMobileView()) e.preventDefault();
+      closeMenu();
+    });
+  }
   drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
   window.addEventListener('resize', () => {
     if (!isMobileView()) closeMenu();

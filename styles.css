@@ -168,8 +168,25 @@ body[data-challenge-days] .challenge-carousel-shell {
   background: linear-gradient(155deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
   box-shadow: 0 24px 80px rgba(0,0,0,0.4);
   backdrop-filter: blur(14px);
+  position: relative;
 }
-body[data-challenge-days] .challenge-carousel-close { margin-left: auto; display: block; }
+body[data-challenge-days] .challenge-carousel-x {
+  position: absolute;
+  right: 0.7rem;
+  top: 0.62rem;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.05);
+  color: var(--white);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+body[data-challenge-days] .challenge-carousel-x:hover {
+  border-color: rgba(255,255,255,0.45);
+}
 
 body[data-challenge-days] .challenge-carousel-track {
   display: flex;
@@ -238,6 +255,9 @@ body[data-challenge-days] .challenge-carousel-controls {
   justify-content: flex-end;
   gap: 0.6rem;
   margin-top: 1rem;
+}
+body[data-challenge-days] .challenge-carousel-controls {
+  display: none;
 }
 
 body[data-challenge-days] #journey-story .streak-bar {
@@ -348,6 +368,15 @@ nav {
   font-size: 0.75rem;
   padding: 0.85rem 0.25rem;
   border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.mobile-nav-logo {
+  display: inline-block;
+  margin: 0 0 0.6rem;
+  text-decoration: none;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 4px;
+  font-size: 2rem;
+  color: var(--orange);
 }
 .mobile-nav-drawer a:hover,
 .mobile-nav-drawer a:active { color: var(--white); }
@@ -1266,10 +1295,15 @@ h1 span { color: var(--orange); }
   grid-template-columns: 1fr 1fr;
   gap: 0.7rem;
 }
+.join-glass-form .cta-input {
+  width: 100%;
+  min-height: 52px;
+  border-right: 1px solid rgba(255,255,255,0.15);
+}
 .join-textarea {
   margin-top: 0.8rem;
-  min-height: 100px;
-  border-right: 1px solid rgba(255,255,255,0.15);
+  min-height: 120px;
+  height: 120px;
   resize: vertical;
 }
 .join-promise-row {
