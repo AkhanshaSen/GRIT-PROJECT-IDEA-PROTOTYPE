@@ -304,6 +304,48 @@ nav {
   transition: color 0.2s;
 }
 .nav-links a:hover { color: var(--white); }
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  width: 42px;
+  height: 38px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+.nav-toggle span {
+  width: 18px;
+  height: 2px;
+  background: var(--white);
+  display: block;
+}
+.mobile-menu {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  background: rgba(10,10,10,0.96);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  z-index: 99;
+  display: none;
+  padding: 0.6rem 1rem 0.9rem;
+}
+.mobile-menu.open { display: grid; }
+.mobile-menu a {
+  color: var(--white);
+  text-decoration: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.76rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 0.7rem 0.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.mobile-menu a:last-child { border-bottom: 0; }
 
 /* ── HERO ── */
 #hero {
@@ -985,11 +1027,15 @@ h1 span { color: var(--orange); }
 }
 .challenge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 3rem; }
 .challenge-card {
+  display: block;
   padding: 2rem;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 4px;
   transition: border-color 0.2s, transform 0.2s;
   position: relative; overflow: hidden;
+  text-decoration: none;
+  color: var(--white);
+  cursor: pointer;
 }
 .challenge-card:hover { border-color: var(--orange); transform: translateY(-4px); }
 .challenge-card::before {
@@ -1299,6 +1345,7 @@ footer {
   .mantra-grid { grid-template-columns: 1fr; }
   nav { padding: 1rem 1.5rem; }
   .nav-links { display: none; }
+  .nav-toggle { display: inline-flex; }
 
   body[data-challenge-days] .hero-right { display: flex; }
   body[data-challenge-days] .challenge-visual,
@@ -1317,6 +1364,7 @@ footer {
 @media (max-width: 640px) {
   nav { padding: 0.85rem 1rem; }
   .nav-logo { font-size: 1.6rem; letter-spacing: 3px; }
+  .mobile-menu { top: 58px; }
 
   #hero,
   #pillars,
