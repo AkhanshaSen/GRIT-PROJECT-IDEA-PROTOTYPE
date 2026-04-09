@@ -329,6 +329,13 @@ function showCoachGuidePopup(title, lines, isError = false) {
   bodyEl.innerHTML = lines.map((line, idx) => `<div>${idx + 1}. ${line}</div>`).join('');
   wrap.classList.toggle('is-error', Boolean(isError));
   wrap.classList.add('open');
+
+  // Hard fallback for restrictive mobile webviews.
+  if (isError && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    try {
+      alert(`${title}\n\n${lines.map((line, idx) => `${idx + 1}. ${line}`).join('\n')}`);
+    } catch {}
+  }
 }
 
 function buildCoachTextSummary(challengeTitle, challengeDays, entry, dayValue, mode) {
@@ -1418,10 +1425,10 @@ function copyMantra() {
   drawer.className = 'mobile-nav-drawer';
   drawer.setAttribute('aria-hidden', 'true');
   const linksHTML = links.innerHTML;
-  const logoText = (logo.textContent || 'GRIT').trim();
+  const logoMarkup = logo.outerHTML.replace('class="nav-logo"', 'class="nav-logo mobile-nav-brand"');
   drawer.innerHTML =
     `<div class="mobile-nav-header">` +
-    `<a class="nav-logo mobile-nav-brand" href="#">${logoText}</a>` +
+    `${logoMarkup}` +
     `<button class="mobile-nav-close" type="button" aria-label="Close menu">×</button>` +
     `</div>` +
     `<ul>${linksHTML}</ul>`;
