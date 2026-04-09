@@ -1200,8 +1200,89 @@ function copyMantra() {
   });
 }
 
+/* ── MOBILE NAV (tap logo or hamburger) ── */
+(function initMobileNav() {
+  const nav = document.querySelector('nav');
+  const logo = nav ? nav.querySelector('.nav-logo') : null;
+  const links = nav ? nav.querySelector('.nav-links') : null;
+  if (!nav || !logo || !links) return;
+
+  const hamburger = document.createElement('button');
+  hamburger.type = 'button';
+  hamburger.className = 'nav-hamburger';
+  hamburger.setAttribute('aria-label', 'Open menu');
+  hamburger.textContent = '☰';
+  nav.appendChild(hamburger);
+
+  const drawer = document.createElement('aside');
+  drawer.className = 'mobile-nav-drawer';
+  drawer.setAttribute('aria-hidden', 'true');
+  drawer.innerHTML = links.innerHTML;
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'mobile-nav-backdrop';
+  backdrop.setAttribute('aria-hidden', 'true');
+
+  document.body.appendChild(backdrop);
+  document.body.appendChild(drawer);
+
+  function isMobileView() {
+    return window.matchMedia('(max-width: 900px)').matches;
+  }
+
+  function closeMenu() {
+    drawer.classList.remove('open');
+    backdrop.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    backdrop.setAttribute('aria-hidden', 'true');
+  }
+
+  function openMenu() {
+    drawer.classList.add('open');
+    backdrop.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+    backdrop.setAttribute('aria-hidden', 'false');
+  }
+
+  function toggleMenu() {
+    if (drawer.classList.contains('open')) closeMenu();
+    else openMenu();
+  }
+
+  hamburger.addEventListener('click', (e) => {
+    e.preventDefault();
+    toggleMenu();
+  });
+
+  logo.addEventListener('click', (e) => {
+    if (!isMobileView()) return;
+    e.preventDefault();
+    toggleMenu();
+  });
+
+  backdrop.addEventListener('click', closeMenu);
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  window.addEventListener('resize', () => {
+    if (!isMobileView()) closeMenu();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+})();
+
 /* ── SCROLL REVEAL ── */
 (function initScrollReveal() {
+  const targets = document.querySelectorAll('.pillar-card, .fact-card, .challenge-card, .win-card, .mantra-card');
+  if (!targets.length) return;
+
+  if (typeof IntersectionObserver === 'undefined') {
+    targets.forEach(el => {
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    });
+    return;
+  }
+
   const observer = new IntersectionObserver(
     entries => entries.forEach(e => {
       if (e.isIntersecting) {
@@ -1212,14 +1293,12 @@ function copyMantra() {
     { threshold: 0.1 }
   );
 
-  document
-    .querySelectorAll('.pillar-card, .fact-card, .challenge-card, .win-card, .mantra-card')
-    .forEach(el => {
-      el.style.opacity    = '0';
-      el.style.transform  = 'translateY(24px)';
-      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-      observer.observe(el);
-    });
+  targets.forEach(el => {
+    el.style.opacity    = '0';
+    el.style.transform  = 'translateY(24px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
 })();
 
 /* ── CHALLENGE SELECTOR (affects hero copy only) ── */
@@ -1227,13 +1306,39 @@ function copyMantra() {
   const cards = Array.from(document.querySelectorAll('#challenge .challenge-card'));
   if (!cards.length) return;
 
-  cards.forEach((card) => {
+  function activateCard(card) {
+    if (!card) return;
+    const title = card.querySelector('.ch-title')?.textContent?.trim() || '';
+    const days = card.querySelector('.ch-days')?.textContent?.trim() || '';
+    const tag = card.querySelector('.ch-tag')?.textContent?.trim() || '';
+    selectedChallenge = { title: title || 'your challenge', days, tag };
+    writeJSON(STORAGE.selectedChallenge, selectedChallenge);
+
+    const daysNum = Number(days);
+    const routeByDays = {
+      7: 'challenge-7.html',
+      21: 'challenge-21.html',
+      30: 'challenge-30.html',
+      66: 'challenge-66.html'
+    };
+    const route = routeByDays[daysNum];
+
+    if (route) window.location.href = route;
+    else renderTodayTask();
+  }
+
+  cards.forEach(card => {
+    card.style.cursor = 'pointer';
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
     card.addEventListener('click', () => {
-      const title = card.querySelector('.ch-title')?.textContent?.trim() || '';
-      const days = card.querySelector('.ch-days')?.textContent?.trim() || '';
-      const tag = card.querySelector('.ch-tag')?.textContent?.trim() || '';
-      selectedChallenge = { title: title || 'your challenge', days, tag };
-      writeJSON(STORAGE.selectedChallenge, selectedChallenge);
+      activateCard(card);
+    });
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        activateCard(card);
+      }
     });
   });
 })();
@@ -1270,11 +1375,10 @@ function copyMantra() {
   const cta = document.getElementById('cta');
   if (!cta) return;
 
-  const form = document.getElementById('ctaJoinForm');
   const input = cta.querySelector('.cta-input');
   const button = cta.querySelector('.btn-primary');
   const note = cta.querySelector('.cta-note');
-  if (!form || !input || !button || !note) return;
+  if (!input || !button || !note) return;
 
   const savedEmail = readJSON(STORAGE.joinedEmail, null);
   if (savedEmail) {
@@ -1303,35 +1407,14 @@ function copyMantra() {
     }, 350);
   }
 
-  form.addEventListener('submit', (e) => {
+  button.addEventListener('click', (e) => {
     e.preventDefault();
     join();
   });
-})();
-
-/* ── MOBILE NAV ── */
-(function initMobileNav() {
-  const toggle = document.getElementById('navToggle');
-  const menu = document.getElementById('mobileMenu');
-  if (!toggle || !menu) return;
-
-  function closeMenu() {
-    menu.classList.remove('open');
-    menu.setAttribute('aria-hidden', 'true');
-    toggle.setAttribute('aria-expanded', 'false');
-  }
-
-  toggle.addEventListener('click', () => {
-    const isOpen = menu.classList.toggle('open');
-    menu.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
-    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  });
-
-  menu.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', closeMenu);
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeMenu();
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      join();
+    }
   });
 })();

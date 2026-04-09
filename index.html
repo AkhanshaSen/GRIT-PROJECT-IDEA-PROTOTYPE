@@ -23,9 +23,6 @@
 ══════════════════════════════════════ -->
 <nav>
   <a class="nav-logo" href="#">GRIT</a>
-  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-    <span></span><span></span><span></span>
-  </button>
   <ul class="nav-links">
     <li><a href="#pillars">About</a></li>
     <li><a href="#interests">Find Your Fire</a></li>
@@ -34,13 +31,6 @@
     <li><a href="#cta">Start</a></li>
   </ul>
 </nav>
-<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
-  <a href="#pillars">About</a>
-  <a href="#interests">Find Your Fire</a>
-  <a href="#mantras">Mantras</a>
-  <a href="#challenge">Challenges</a>
-  <a href="#cta">Start</a>
-</div>
 
 <!-- ══════════════════════════════════════
      HERO
@@ -342,7 +332,7 @@
   <p class="section-sub">Every journey starts with a single commitment. Which one are you ready to make?</p>
 
   <div class="challenge-grid">
-    <a class="challenge-card" href="challenge-7.html">
+    <div class="challenge-card" onclick="window.location.href='challenge-7.html'">
       <div class="ch-days">7</div>
       <div class="ch-title">The Ignition Sprint</div>
       <p class="ch-desc">
@@ -350,8 +340,8 @@
         Prove to yourself that you can show up — even when you don't feel like it.
       </p>
       <span class="ch-tag">Beginner</span>
-    </a>
-    <a class="challenge-card" href="challenge-21.html">
+    </div>
+    <div class="challenge-card" onclick="window.location.href='challenge-21.html'">
       <div class="ch-days">21</div>
       <div class="ch-title">The Momentum Builder</div>
       <p class="ch-desc">
@@ -359,8 +349,8 @@
         and a daily movement practice. This is where patterns form.
       </p>
       <span class="ch-tag">Intermediate</span>
-    </a>
-    <a class="challenge-card" href="challenge-30.html">
+    </div>
+    <div class="challenge-card" onclick="window.location.href='challenge-30.html'">
       <div class="ch-days">30</div>
       <div class="ch-title">The Grit Sprint</div>
       <p class="ch-desc">
@@ -368,8 +358,8 @@
         84% of those who start, finish. Are you in that 84%?
       </p>
       <span class="ch-tag">Core Program</span>
-    </a>
-    <a class="challenge-card" href="challenge-66.html">
+    </div>
+    <div class="challenge-card" onclick="window.location.href='challenge-66.html'">
       <div class="ch-days">66</div>
       <div class="ch-title">The Identity Shift</div>
       <p class="ch-desc">
@@ -377,7 +367,7 @@
         For those who are serious about who they're becoming.
       </p>
       <span class="ch-tag">Advanced</span>
-    </a>
+    </div>
   </div>
 </section>
 
@@ -453,10 +443,10 @@
       Your future self is built in the moments you choose to do the hard thing.
       This is one of those moments.
     </p>
-    <form class="cta-input-row" id="ctaJoinForm" action="join-options.html" method="get">
-      <input class="cta-input" type="email" name="email" placeholder="your@email.com" required />
-      <button class="btn-primary" type="submit" style="white-space:nowrap">Join Free →</button>
-    </form>
+    <div class="cta-input-row">
+      <input class="cta-input" type="email" placeholder="your@email.com" />
+      <button class="btn-primary" style="white-space:nowrap" onclick="(function(btn){var input=document.querySelector('#cta .cta-input');var e=(input&&input.value||'').trim();window.location.href='join-options.html'+(e?('?email='+encodeURIComponent(e)):'');})(this)">Join Free →</button>
+    </div>
     <p class="cta-note">No spam. No noise. Just your daily grit nudge.</p>
   </div>
 </section>

@@ -1,3 +1,69 @@
+(function initMobileNav() {
+  const nav = document.querySelector('nav');
+  const logo = nav ? nav.querySelector('.nav-logo') : null;
+  const links = nav ? nav.querySelector('.nav-links') : null;
+  if (!nav || !logo || !links) return;
+
+  const hamburger = document.createElement('button');
+  hamburger.type = 'button';
+  hamburger.className = 'nav-hamburger';
+  hamburger.setAttribute('aria-label', 'Open menu');
+  hamburger.textContent = '☰';
+  nav.appendChild(hamburger);
+
+  const drawer = document.createElement('aside');
+  drawer.className = 'mobile-nav-drawer';
+  drawer.setAttribute('aria-hidden', 'true');
+  drawer.innerHTML = links.innerHTML;
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'mobile-nav-backdrop';
+  backdrop.setAttribute('aria-hidden', 'true');
+
+  document.body.appendChild(backdrop);
+  document.body.appendChild(drawer);
+
+  function isMobileView() {
+    return window.matchMedia('(max-width: 900px)').matches;
+  }
+
+  function closeMenu() {
+    drawer.classList.remove('open');
+    backdrop.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    backdrop.setAttribute('aria-hidden', 'true');
+  }
+
+  function toggleMenu() {
+    const isOpen = drawer.classList.contains('open');
+    if (isOpen) closeMenu();
+    else {
+      drawer.classList.add('open');
+      backdrop.classList.add('open');
+      drawer.setAttribute('aria-hidden', 'false');
+      backdrop.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  hamburger.addEventListener('click', (e) => {
+    e.preventDefault();
+    toggleMenu();
+  });
+  logo.addEventListener('click', (e) => {
+    if (!isMobileView()) return;
+    e.preventDefault();
+    toggleMenu();
+  });
+  backdrop.addEventListener('click', closeMenu);
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  window.addEventListener('resize', () => {
+    if (!isMobileView()) closeMenu();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+})();
+
 (function initCalmBreathing() {
   const trigger = document.querySelector('.breathe-trigger');
   const panel = document.getElementById('breathPanel');
