@@ -19,6 +19,7 @@
       <li><a href="#why">Why Mantras</a></li>
       <li><a href="#self-talk">Self Talk</a></li>
       <li><a href="#heroes">Heroes</a></li>
+      <li><a href="tools.html">Tools</a></li>
       <li><a href="index.html#mantras">Back</a></li>
     </ul>
   </nav>
@@ -44,9 +45,16 @@
   <section class="calm-section calm-banners">
     <div class="section-label">Calm Visual Banners</div>
     <h2 class="section-title">BREATHE IN<br>THE SILENCE</h2>
-    <p class="section-sub" style="margin-bottom:1.5rem">Click the banner to start a peaceful breathing session.</p>
-    <div class="calm-banner-grid">
-      <button class="calm-banner b1 breathe-trigger" type="button" aria-label="Start breathing session"></button>
+    <p class="section-sub" style="margin-bottom:1.5rem">Pick a pattern. The circle expands and contracts with each phase. Sessions are saved locally (last 50).</p>
+    <div class="calm-banner-grid breath-pattern-grid">
+      <button class="calm-banner b1 breathe-trigger" type="button" data-pattern="calm" data-label="CALM 4-6" aria-label="Calm 4-6 breathing"></button>
+      <button class="calm-banner b2 breathe-trigger" type="button" data-pattern="box" data-label="BOX 4-4-4-4" aria-label="Box breathing"></button>
+      <button class="calm-banner b3 breathe-trigger" type="button" data-pattern="n478" data-label="4-7-8 RELAX" aria-label="Four seven eight breathing"></button>
+      <button class="calm-banner b4 breathe-trigger" type="button" data-pattern="wim" data-label="WIM HOF STYLE" aria-label="Wim Hof style rounds"></button>
+    </div>
+    <div class="tools-card" style="margin-top:1.5rem;max-width:720px;margin-left:auto;margin-right:auto">
+      <div class="result-label">Session history</div>
+      <ul id="breathHistoryList" class="quote-list breath-hist-list"></ul>
     </div>
   </section>
 
@@ -129,6 +137,6 @@
     </div>
   </div>
 
-  <script src="mantras-calm.js?v=20260409d"></script>
+  <script src="mantras-calm.js?v=20260514"></script>
 </body>
 </html>

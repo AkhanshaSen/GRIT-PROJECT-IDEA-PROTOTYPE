@@ -7,11 +7,34 @@
 const STORAGE = {
   habitDoneByDate: 'grit.habitDoneByDate',
   habitCompletionByDate: 'grit.habitCompletionByDate',
+  goalCompletionByDate: 'grit.goalCompletionByDate',
+  nonNegotiableByDate: 'grit.nonNegotiableByDate',
+  entryMood: 'grit.entryMood',
+  entryMoodDate: 'grit.entryMoodDate',
+  theme: 'grit.theme',
+  mantraPersonal: 'grit.mantraPersonal',
+  mantraCategoryFilter: 'grit.mantraCategoryFilter',
   quizState: 'grit.quizState',
+  gritScoreQuiz: 'grit.gritScoreQuiz',
+  driveKillerQuiz: 'grit.driveKillerQuiz',
+  motivationMatchQuiz: 'grit.motivationMatchQuiz',
   selectedChallenge: 'grit.selectedChallenge',
   joinedEmail: 'grit.joinedEmail',
   challengeDayPrefix: 'grit.challengeDay.',
-  coachEntryPrefix: 'grit.coachEntry.'
+  coachEntryPrefix: 'grit.coachEntry.',
+  coachPersona: 'grit.coachPersona',
+  weeklyProgramState: 'grit.weeklyProgramState',
+  ritualStateByDate: 'grit.ritualStateByDate',
+  coldShowerByDate: 'grit.coldShowerByDate',
+  breathSessions: 'grit.breathSessions',
+  onePercentLog: 'grit.onePercentLog',
+  wallPosts: 'grit.wallPosts',
+  snoozePledge: 'grit.snoozePledge',
+  snoozeLog: 'grit.snoozeLog',
+  genericChallengeRuns: 'grit.genericChallengeRuns',
+  futureLetter: 'grit.futureLetter',
+  failureResume: 'grit.failureResume',
+  weeklyDigestLastCopy: 'grit.weeklyDigestLastCopy'
 };
 
 function readJSON(key, fallback) {
@@ -69,6 +92,63 @@ function shiftISODate(isoDate, days) {
   const d = new Date(y, m - 1, day);
   d.setDate(d.getDate() + days);
   return isoLocalDate(d);
+}
+
+function hashStringToUint(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+const DAILY_MISSION_POOL = [
+  'Execute one rep before you negotiate with yourself.',
+  'Replace one distraction block with 25 minutes of deep work.',
+  'Finish one thing you have been avoiding for under 10 minutes.',
+  'Move your body before you touch social feeds.',
+  'Write down the next three steps — then do step one.',
+  'Compliment your future self: do the hard thing first.',
+  'Shrink the goal until it is laughably easy — then do it.',
+  'Close every loop you opened yesterday (one inbox, one message, one chore).',
+  'Teach someone one thing you learned this week — clarity builds grit.',
+  'End the day with proof: one screenshot, one log, one line in a journal.',
+  'Stack sleep: lights down 30 minutes earlier tonight.',
+  'Cold truth: do the boring maintenance task you keep skipping.',
+  'Say no once today to protect your main priority.',
+  'Spend 15 minutes on the skill that compounds for your path.',
+  'Walk outside with no inputs — let your next move surface.',
+  'Make one courageous ask (help, feedback, opportunity).',
+  'Fix one friction in your environment so tomorrow is easier.',
+  'Trade one hour of consumption for one hour of creation.',
+  'Face the smallest version of your biggest fear today.',
+  'Ship something imperfect before midnight.'
+];
+
+function getDailyMissionForDate(iso) {
+  if (!iso) return DAILY_MISSION_POOL[0];
+  const idx = hashStringToUint(`grit-mission-${iso}`) % DAILY_MISSION_POOL.length;
+  return DAILY_MISSION_POOL[idx];
+}
+
+const goalCompletionByDate = readJSON(STORAGE.goalCompletionByDate, {});
+
+function computeGoalStreak() {
+  const today = getLocalISODate();
+  let cursor = goalCompletionByDate[today] ? today : shiftISODate(today, -1);
+  let count = 0;
+  while (goalCompletionByDate[cursor]) {
+    count++;
+    cursor = shiftISODate(cursor, -1);
+    if (count >= 365) break;
+  }
+  return count;
+}
+
+function persistGoalCompletion(today, val) {
+  goalCompletionByDate[today] = val;
+  writeJSON(STORAGE.goalCompletionByDate, goalCompletionByDate);
 }
 
 /* ── HABIT STREAK MODEL (localStorage-backed) ── */
@@ -219,13 +299,22 @@ function computeCoachMode(entry, challengeDay, challengeDays) {
 }
 
 function getCoachAdvice(mode) {
+  const personaFlavors = {
+    drill: ' (Coach voice: no excuses — one rep now.)',
+    mentor: ' (Coach voice: long game — character over mood.)',
+    hype: ' (Coach voice: energy up — celebrate the next step.)',
+    therapist: ' (Coach voice: gentle truth — name it, then one kind action.)'
+  };
+  const p = readJSON(STORAGE.coachPersona, null);
+  const flavor = p && personaFlavors[p] ? personaFlavors[p] : '';
+
   if (mode === 'Push') {
-    return 'You have momentum. Take one hard action in the next 30 minutes and protect your focus.';
+    return 'You have momentum. Take one hard action in the next 30 minutes and protect your focus.' + flavor;
   }
   if (mode === 'Recover') {
-    return 'Lower the friction: do the smallest meaningful rep, reset, and rebuild your rhythm.';
+    return 'Lower the friction: do the smallest meaningful rep, reset, and rebuild your rhythm.' + flavor;
   }
-  return 'Stay consistent. Stack one clean win now, then repeat the same standard tomorrow.';
+  return 'Stay consistent. Stack one clean win now, then repeat the same standard tomorrow.' + flavor;
 }
 
 function getCoachCelebration(mode) {
@@ -887,6 +976,20 @@ function initChallengePage() {
     });
   }
 
+  if (carouselTrack) {
+    carouselTrack.addEventListener('click', e => {
+      const a = e.target.closest('a');
+      if (!a || !a.getAttribute('href')) return;
+      if (
+        !window.confirm(
+          'Leave this challenge page? Your progress is saved locally. Skip — or level up on a new path when you are ready.'
+        )
+      ) {
+        e.preventDefault();
+      }
+    });
+  }
+
   if (carouselTrack && carouselPrevBtn && carouselNextBtn) {
     function scrollCards(direction) {
       const amount = Math.round(carouselTrack.clientWidth * 0.65) * direction;
@@ -917,7 +1020,8 @@ function renderTodayTask() {
       `For your ${selectedChallenge.title}: keep showing up today. Small wins stack into momentum.`;
     return;
   }
-  todayTaskEl.textContent = baseTodayTaskText;
+  const mission = getDailyMissionForDate(getLocalISODate());
+  todayTaskEl.textContent = `Today's mission: ${mission}`;
 }
 
 /* ── HABIT TRACKER ── */
@@ -983,8 +1087,12 @@ function toggleHabit(el) {
 }
 
 // Run habit init once DOM is available (this script is loaded at the end of body).
+initThemeFromStorage();
 initHabitTracker();
 initChallengePage();
+initThemeControls();
+initMoodGate();
+initDailyGritSection();
 
 /* ── INTEREST FINDER QUIZ ── */
 const answers = {};
@@ -1372,47 +1480,390 @@ function resetQuiz() {
 // Restore quiz state on load (if present).
 loadQuizState();
 
+/* ── THEME (dark / war) + MOOD ── */
+function applyTheme(theme) {
+  const t = theme === 'dark' || theme === 'war' ? theme : 'default';
+  if (t === 'default') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', t);
+  writeJSON(STORAGE.theme, t);
+}
+
+function initThemeFromStorage() {
+  const saved = readJSON(STORAGE.theme, 'default');
+  applyTheme(saved === 'dark' || saved === 'war' ? saved : 'default');
+}
+
+function initThemeControls() {
+  const wrap = document.getElementById('themeToggle');
+  if (!wrap) return;
+  wrap.querySelectorAll('[data-theme-set]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const v = btn.getAttribute('data-theme-set') || 'default';
+      applyTheme(v);
+      wrap.querySelectorAll('[data-theme-set]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  const cur = readJSON(STORAGE.theme, 'default');
+  const active = wrap.querySelector(`[data-theme-set="${cur}"]`);
+  if (active) {
+    wrap.querySelectorAll('[data-theme-set]').forEach(b => b.classList.remove('active'));
+    active.classList.add('active');
+  }
+}
+
+function showGritToast(message, isError) {
+  let el = document.getElementById('gritToast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'gritToast';
+    el.setAttribute('role', 'status');
+    el.style.cssText =
+      'position:fixed;left:50%;bottom:2rem;transform:translateX(-50%);z-index:99999;' +
+      'padding:0.85rem 1.35rem;border-radius:10px;background:rgba(18,18,18,0.96);' +
+      'border:1px solid rgba(255,255,255,0.14);color:#f5f0e8;font-size:0.9rem;max-width:min(420px,92vw);' +
+      'box-shadow:0 12px 40px rgba(0,0,0,0.55);opacity:0;transition:opacity 0.25s ease;pointer-events:none;' +
+      'font-family:DM Sans,system-ui,sans-serif;text-align:center;line-height:1.4';
+    document.body.appendChild(el);
+  }
+  el.textContent = message;
+  el.style.borderColor = isError ? 'rgba(255,90,90,0.55)' : 'rgba(232,78,27,0.45)';
+  el.style.opacity = '1';
+  clearTimeout(el._gritHideToast);
+  el._gritHideToast = setTimeout(() => {
+    el.style.opacity = '0';
+  }, 2800);
+}
+window.showGritToast = showGritToast;
+
+const MOOD_COPY = {
+  defeated: {
+    heroSub:
+      'You do not have to feel ready. You only have to take one small rep. GRIT meets you where you are — then walks with you forward.',
+    mantraSubHint: 'Gentle mode: one tiny win is enough.'
+  },
+  neutral: {
+    heroSub:
+      'Discover what pulls you, build habits that stick, and keep grinding with mantras and challenges built for teens and young adults.',
+    mantraSubHint: 'Pick one lane and go one degree deeper today.'
+  },
+  ready: {
+    heroSub:
+      'Channel the fire: lock one target, remove one excuse, and stack proof today. You came here to work — let the platform match your intensity.',
+    mantraSubHint: 'Attack the hardest step first while energy is high.'
+  }
+};
+
+function applyEntryMood(mood) {
+  document.body.classList.remove('mood-defeated', 'mood-neutral', 'mood-ready');
+  const m = mood === 'defeated' || mood === 'ready' ? mood : 'neutral';
+  document.body.classList.add(`mood-${m}`);
+  const sub = document.querySelector('#hero .hero-sub');
+  if (sub && MOOD_COPY[m]) {
+    sub.innerHTML = MOOD_COPY[m].heroSub;
+  }
+}
+
+function initMoodGate() {
+  const modal = document.getElementById('moodEntryModal');
+  if (!modal) return;
+  const todayIso = getLocalISODate();
+  const savedDate = localStorage.getItem(STORAGE.entryMoodDate);
+  const savedMood = localStorage.getItem(STORAGE.entryMood);
+  if (savedDate === todayIso && savedMood && ['defeated', 'neutral', 'ready'].includes(savedMood)) {
+    applyEntryMood(savedMood);
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    return;
+  }
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+
+  function closeMood(mood) {
+    localStorage.setItem(STORAGE.entryMood, mood);
+    localStorage.setItem(STORAGE.entryMoodDate, todayIso);
+    applyEntryMood(mood);
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    renderMantraToDom();
+  }
+
+  modal.addEventListener('click', e => {
+    const pick = e.target.closest('[data-mood-pick]');
+    if (pick) {
+      e.preventDefault();
+      const mood = pick.getAttribute('data-mood-pick') || 'neutral';
+      closeMood(mood);
+      return;
+    }
+    const skipBtn = e.target.closest('.mood-skip');
+    if (skipBtn) {
+      e.preventDefault();
+      closeMood('neutral');
+    }
+  });
+}
+
+function initDailyGritSection() {
+  const missionEl = document.getElementById('dashboardMission');
+  const streakHabitsEl = document.getElementById('dashboardStreakHabits');
+  const streakGoalsEl = document.getElementById('dashboardStreakGoals');
+  const nnInput = document.getElementById('nonNegotiableInput');
+  const nnSave = document.getElementById('nonNegotiableSave');
+  const goalCheck = document.getElementById('dailyGoalCheckbox');
+  if (!missionEl) return;
+
+  const today = getLocalISODate();
+  missionEl.textContent = getDailyMissionForDate(today);
+
+  function renderDashboardStreaks() {
+    if (streakHabitsEl) streakHabitsEl.textContent = String(computeStreakCount());
+    if (streakGoalsEl) streakGoalsEl.textContent = String(computeGoalStreak());
+  }
+  renderDashboardStreaks();
+
+  const nnMap = readJSON(STORAGE.nonNegotiableByDate, {});
+  if (nnInput) nnInput.value = nnMap[today] || '';
+
+  if (nnSave && nnInput) {
+    nnSave.addEventListener('click', () => {
+      nnMap[today] = nnInput.value.trim();
+      writeJSON(STORAGE.nonNegotiableByDate, nnMap);
+      nnSave.textContent = 'Saved ✓';
+      setTimeout(() => {
+        nnSave.textContent = 'Save';
+      }, 1200);
+    });
+  }
+
+  if (goalCheck) {
+    goalCheck.checked = Boolean(goalCompletionByDate[today]);
+    goalCheck.addEventListener('change', () => {
+      persistGoalCompletion(today, goalCheck.checked);
+      renderDashboardStreaks();
+    });
+  }
+}
+
 /* ── MANTRA ENGINE ── */
+const MANTRA_CATS = ['resilience', 'discipline', 'abundance', 'self-worth'];
+
 const MANTRAS = [
-  { text: 'YOUR ONLY COMPETITION IS WHO YOU WERE YESTERDAY.',         sub: 'On days it feels impossible — this is the truth.' },
-  { text: 'SHOW UP. DO THE WORK. THE RESULTS WILL COME.',             sub: 'Consistency beats talent every single time.' },
-  { text: 'YOU ARE CAPABLE OF MORE THAN YOU KNOW.',                   sub: 'Your limits are further than you think.' },
-  { text: 'THE DISCOMFORT YOU FEEL IS CALLED GROWTH.',                sub: "Lean into it. That's where change lives." },
-  { text: 'SMALL STEPS EVERY DAY BUILD EMPIRES.',                     sub: 'Never underestimate what 1% better looks like in a year.' },
-  { text: "YOUR POTENTIAL IS NOT A DESTINATION. IT'S A DIRECTION.",   sub: "Keep moving. The destination is who you're becoming." },
-  { text: 'BREATHE. RESET. GO AGAIN. ALWAYS.',                        sub: "Falling isn't failing. Staying down is." },
-  { text: 'THE WORLD BENDS FOR THOSE WHO REFUSE TO BREAK.',           sub: "Grit isn't loud. It's the quiet decision to keep going." },
-  { text: 'YOU WERE BUILT FOR THIS EXACT MOMENT.',                    sub: "Everything you've been through prepared you for right now." },
-  { text: 'DREAM BIG. START SMALL. ACT NOW.',                         sub: 'The best time to begin was yesterday. The second best is today.' },
+  { text: 'BOUNCE BACK HARDER THAN THE SETBACK HIT YOU.', sub: 'Resilience is a decision you repeat.', category: 'resilience' },
+  { text: 'YOU HAVE SURVIVED 100% OF YOUR BAD DAYS SO FAR.', sub: 'This one is another rep, not a verdict.', category: 'resilience' },
+  { text: 'SCARS MEAN YOU STAYED IN THE FIGHT.', sub: 'Wear them as proof, not shame.', category: 'resilience' },
+  { text: 'FATIGUE IS REAL; QUITTING IS OPTIONAL.', sub: 'Shrink the task until you can move.', category: 'resilience' },
+  { text: 'STILL STANDING IS STILL WINNING.', sub: 'Some days the win is not collapsing.', category: 'resilience' },
+  { text: 'DISCIPLINE BEATS MOOD EVERY TIME.', sub: 'Action first; feelings follow.', category: 'discipline' },
+  { text: 'DO THE BORING REPS WHEN NO ONE CLAPS.', sub: 'Champions are built in invisible hours.', category: 'discipline' },
+  { text: 'YOUR SYSTEM IS YOUR SUPERPOWER.', sub: 'Design the default so discipline is easy.', category: 'discipline' },
+  { text: 'SHOW UP ON THE DAYS YOU WANT TO DISAPPEAR.', sub: 'Identity is built when it costs.', category: 'discipline' },
+  { text: 'DELAYED GRATIFICATION IS A MUSCLE.', sub: 'Flex it today with one hard choice.', category: 'discipline' },
+  { text: 'THERE IS ROOM FOR YOU AT THE TABLE.', sub: 'Abundance starts with believing you can grow.', category: 'abundance' },
+  { text: 'CELEBRATE SMALL WINS; THEY STACK.', sub: 'Gratitude multiplies momentum.', category: 'abundance' },
+  { text: 'GIVE VALUE FIRST; OPPORTUNITY FOLLOWS.', sub: 'Play long games with open hands.', category: 'abundance' },
+  { text: 'YOUR NETWORK EXPANDS WHEN YOU SERVE.', sub: 'Lift one person today.', category: 'abundance' },
+  { text: 'ENOUGH IS A LAUNCHPAD, NOT A CEILING.', sub: 'Build from enough, aim for more.', category: 'abundance' },
+  { text: 'YOU ARE NOT BEHIND; YOU ARE ON YOUR PATH.', sub: 'Self-worth is not a ranking.', category: 'self-worth' },
+  { text: 'YOUR VOICE MATTERS EVEN WHEN IT SHAKES.', sub: 'Speak anyway; clarity comes with reps.', category: 'self-worth' },
+  { text: 'BOUNDARIES ARE AN ACT OF SELF-RESPECT.', sub: 'Saying no can be love for future you.', category: 'self-worth' },
+  { text: 'YOU DO NOT NEED PERMISSION TO RESET.', sub: 'Begin again without apology.', category: 'self-worth' },
+  { text: 'COMPARISON STEALS YOUR REPS.', sub: 'Eyes on your own paper, heart on your own pace.', category: 'self-worth' },
+  { text: 'YOUR ONLY COMPETITION IS WHO YOU WERE YESTERDAY.', sub: 'On days it feels impossible — this is the truth.', category: 'discipline' },
+  { text: 'SHOW UP. DO THE WORK. THE RESULTS WILL COME.', sub: 'Consistency beats talent every single time.', category: 'discipline' },
+  { text: 'YOU ARE CAPABLE OF MORE THAN YOU KNOW.', sub: 'Your limits are further than you think.', category: 'self-worth' },
+  { text: 'THE DISCOMFORT YOU FEEL IS CALLED GROWTH.', sub: "Lean into it. That's where change lives.", category: 'resilience' },
+  { text: 'SMALL STEPS EVERY DAY BUILD EMPIRES.', sub: 'Never underestimate what 1% better looks like in a year.', category: 'abundance' },
+  { text: "YOUR POTENTIAL IS NOT A DESTINATION. IT'S A DIRECTION.", sub: "Keep moving. The destination is who you're becoming.", category: 'abundance' },
+  { text: 'BREATHE. RESET. GO AGAIN. ALWAYS.', sub: "Falling isn't failing. Staying down is.", category: 'resilience' },
+  { text: 'THE WORLD BENDS FOR THOSE WHO REFUSE TO BREAK.', sub: "Grit isn't loud. It's the quiet decision to keep going.", category: 'resilience' },
+  { text: 'YOU WERE BUILT FOR THIS EXACT MOMENT.', sub: "Everything you've been through prepared you for right now.", category: 'self-worth' },
+  { text: 'DREAM BIG. START SMALL. ACT NOW.', sub: 'The best time to begin was yesterday. The second best is today.', category: 'discipline' }
 ];
+
+let mantraCategoryFilter = readJSON(STORAGE.mantraCategoryFilter, 'all');
+if (mantraCategoryFilter !== 'all' && !MANTRA_CATS.includes(mantraCategoryFilter)) mantraCategoryFilter = 'all';
+
+function getFilteredMantraIndices() {
+  return MANTRAS.map((m, i) => i).filter(i => mantraCategoryFilter === 'all' || MANTRAS[i].category === mantraCategoryFilter);
+}
 
 let mantraIdx = 0;
 
-function nextMantra() {
-  mantraIdx = (mantraIdx + 1) % MANTRAS.length;
+function syncMantraIdxInFilter() {
+  const allowed = getFilteredMantraIndices();
+  if (!allowed.length) return;
+  if (!allowed.includes(mantraIdx)) mantraIdx = allowed[0];
+}
+
+function getDisplayedMantra() {
+  syncMantraIdxInFilter();
+  const m = MANTRAS[mantraIdx];
+  const personal = readJSON(STORAGE.mantraPersonal, null);
+  if (personal && personal.text && Number(personal.forIndex) === mantraIdx) {
+    return { text: personal.text, sub: m.sub, category: m.category };
+  }
+  return m;
+}
+
+function renderMantraToDom() {
   const textEl = document.getElementById('mantraText');
-  const subEl  = document.getElementById('mantraSub');
+  const subEl = document.getElementById('mantraSub');
+  if (!textEl || !subEl) return;
+  const d = getDisplayedMantra();
+  const mood = localStorage.getItem(STORAGE.entryMood) || 'neutral';
+  const moodHint = MOOD_COPY[mood] ? MOOD_COPY[mood].mantraSubHint : '';
+  textEl.textContent = d.text;
+  subEl.textContent = moodHint ? `${d.sub} — ${moodHint}` : d.sub;
+  const ta = document.getElementById('mantraPersonalInput');
+  if (ta) {
+    const personal = readJSON(STORAGE.mantraPersonal, null);
+    ta.value =
+      personal && personal.text && Number(personal.forIndex) === mantraIdx ? personal.text : '';
+  }
+}
+
+function nextMantra() {
+  const allowed = getFilteredMantraIndices();
+  if (!allowed.length) return;
+  const pos = allowed.indexOf(mantraIdx);
+  const nextPos = pos >= 0 ? (pos + 1) % allowed.length : 0;
+  mantraIdx = allowed[nextPos];
+
+  const textEl = document.getElementById('mantraText');
+  const subEl = document.getElementById('mantraSub');
   if (!textEl || !subEl) return;
 
   textEl.style.opacity = '0';
-  subEl.style.opacity  = '0';
+  subEl.style.opacity = '0';
 
   setTimeout(() => {
-    textEl.textContent   = MANTRAS[mantraIdx].text;
-    subEl.textContent    = MANTRAS[mantraIdx].sub;
+    renderMantraToDom();
     textEl.style.opacity = '1';
-    subEl.style.opacity  = '1';
+    subEl.style.opacity = '1';
   }, 350);
 }
 
 function copyMantra() {
   const btn = document.querySelector('#mantras .mantra-controls button.btn-ghost');
-  navigator.clipboard.writeText(MANTRAS[mantraIdx].text).then(() => {
-    if (!btn) return;
-    btn.textContent = 'Copied ✓';
-    setTimeout(() => (btn.textContent = 'Copy It'), 1500);
+  const d = getDisplayedMantra();
+  navigator.clipboard.writeText(d.text).then(() => {
+    if (btn) {
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => (btn.textContent = 'Copy It'), 1500);
+    }
+    if (typeof showGritToast === 'function') showGritToast('Copied to clipboard.');
+  }).catch(() => {
+    if (typeof showGritToast === 'function') {
+      showGritToast('Clipboard blocked — select the mantra text and copy manually.', true);
+    }
   });
 }
+
+function savePersonalMantra() {
+  const ta = document.getElementById('mantraPersonalInput');
+  if (!ta) return;
+  const text = ta.value.trim();
+  if (!text) {
+    writeJSON(STORAGE.mantraPersonal, null);
+    renderMantraToDom();
+    if (typeof showGritToast === 'function') showGritToast('Personal line cleared.');
+    return;
+  }
+  writeJSON(STORAGE.mantraPersonal, { text, forIndex: mantraIdx });
+  renderMantraToDom();
+  if (typeof showGritToast === 'function') showGritToast('Your mantra version is saved.');
+}
+
+function initMantraCategoryChips() {
+  const wrap = document.getElementById('mantraCategoryChips');
+  if (!wrap) return;
+  wrap.querySelectorAll('[data-mantra-cat]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      mantraCategoryFilter = chip.getAttribute('data-mantra-cat') || 'all';
+      writeJSON(STORAGE.mantraCategoryFilter, mantraCategoryFilter);
+      wrap.querySelectorAll('[data-mantra-cat]').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      syncMantraIdxInFilter();
+      renderMantraToDom();
+    });
+  });
+  const cur = readJSON(STORAGE.mantraCategoryFilter, 'all');
+  const active = wrap.querySelector(`[data-mantra-cat="${cur}"]`) || wrap.querySelector('[data-mantra-cat="all"]');
+  if (active) {
+    wrap.querySelectorAll('[data-mantra-cat]').forEach(c => c.classList.remove('active'));
+    active.classList.add('active');
+    mantraCategoryFilter = active.getAttribute('data-mantra-cat') || 'all';
+  }
+  syncMantraIdxInFilter();
+}
+
+function downloadMantraWallpaper() {
+  const d = getDisplayedMantra();
+  const canvas = document.createElement('canvas');
+  const w = 1080;
+  const h = 1920;
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  const g = ctx.createLinearGradient(0, 0, w, h);
+  g.addColorStop(0, '#0a0a0a');
+  g.addColorStop(1, '#2a1510');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = '#e84e1b';
+  ctx.font = 'bold 36px DM Sans, sans-serif';
+  ctx.fillText('GRIT', 72, 100);
+  ctx.fillStyle = '#f5f0e8';
+  ctx.font = 'bold 52px Bebas Neue, sans-serif';
+  const words = d.text.split(' ');
+  let line = '';
+  let y = 280;
+  const maxW = w - 144;
+  words.forEach(word => {
+    const test = line + word + ' ';
+    if (ctx.measureText(test).width > maxW && line) {
+      ctx.fillText(line.trim(), 72, y);
+      line = word + ' ';
+      y += 64;
+    } else line = test;
+  });
+  if (line) ctx.fillText(line.trim(), 72, y);
+  ctx.fillStyle = '#c9b89a';
+  ctx.font = '28px DM Sans, sans-serif';
+  const subWords = d.sub.split(' ');
+  line = '';
+  y += 100;
+  subWords.forEach(word => {
+    const test = line + word + ' ';
+    if (ctx.measureText(test).width > maxW && line) {
+      ctx.fillText(line.trim(), 72, y);
+      line = word + ' ';
+      y += 40;
+    } else line = test;
+  });
+  if (line) ctx.fillText(line.trim(), 72, y);
+  canvas.toBlob(blob => {
+    if (!blob) {
+      if (typeof showGritToast === 'function') showGritToast('Could not create image.', true);
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'grit-mantra-wallpaper.png';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    if (typeof showGritToast === 'function') showGritToast('Wallpaper download started.');
+  });
+}
+
+window.downloadMantraWallpaper = downloadMantraWallpaper;
+window.savePersonalMantra = savePersonalMantra;
+
+initMantraCategoryChips();
+renderMantraToDom();
 
 /* ── MOBILE NAV (tap logo or hamburger) ── */
 (function initMobileNav() {
@@ -1629,3 +2080,16 @@ function copyMantra() {
     }
   });
 })();
+
+window.GRIT = {
+  STORAGE,
+  readJSON,
+  writeJSON,
+  getLocalISODate,
+  shiftISODate,
+  downloadFile,
+  computeStreakCount: () => computeStreakCount(),
+  computeGoalStreak: () => computeGoalStreak(),
+  getDailyMissionForDate,
+  hashStringToUint
+};

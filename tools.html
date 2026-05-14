@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GRIT — Tools &amp; Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body id="tools-body" class="tools-page">
+
+<nav>
+  <a class="nav-logo" href="index.html">GRIT</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#daily-grit">Dashboard</a></li>
+    <li><a href="mantras-calm.html">Breath</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul>
+  <div class="nav-theme-toggle" id="themeToggle" aria-label="Theme">
+    <button type="button" class="theme-chip" data-theme-set="default">Calm</button>
+    <button type="button" class="theme-chip" data-theme-set="dark">Dark</button>
+    <button type="button" class="theme-chip" data-theme-set="war">War</button>
+  </div>
+</nav>
+
+<section class="tools-hero">
+  <div class="section-label">Lab</div>
+  <h1 class="section-title" style="margin-bottom:0.5rem">TOOLS &amp;<br><span>PROTOCOLS</span></h1>
+  <p class="section-sub" style="max-width:520px">Wake rituals, breathwork, quizzes, coaching modes, accountability, and bonus power tools — all run locally in your browser.</p>
+  <div class="tools-nav-grid">
+    <a href="#playlists">Playlists</a>
+    <a href="#wake">Wake ritual</a>
+    <a href="#breath">Breath</a>
+    <a href="#quizzes">Quizzes</a>
+    <a href="#coaching">Coaching</a>
+    <a href="#weekly">Weekly programs</a>
+    <a href="#excuse">Hard conversation</a>
+    <a href="#hof">Hall of Fame</a>
+    <a href="#quotes">Quotes</a>
+    <a href="#onepct">1% log</a>
+    <a href="#wall">Wall</a>
+    <a href="#alarm">Alarm</a>
+    <a href="#pledge">Snooze pledge</a>
+    <a href="#challenges">Challenges</a>
+    <a href="#bonus">Bonus</a>
+  </div>
+</section>
+
+<section class="tools-section" id="playlists">
+  <div class="section-label">Hype</div>
+  <h2 class="section-title">PLAYLISTS</h2>
+  <p class="section-sub">Embedded streams (requires network). Pick your lane.</p>
+  <div class="tools-tabs" id="playlistTabs">
+    <button type="button" class="tools-tab active" data-pl="focus">Focus mode</button>
+    <button type="button" class="tools-tab" data-pl="rage">Rage quit comfort</button>
+    <button type="button" class="tools-tab" data-pl="reset">Sunday reset</button>
+  </div>
+  <div class="tools-card" id="playlistPanels">
+    <div class="tools-panel" data-pl-panel="focus">
+      <p class="section-sub" style="margin:0">Deep work / study energy.</p>
+      <div class="playlist-frame-wrap">
+        <iframe title="Focus playlist" src="https://www.youtube.com/embed/jfKfPfyJRdk" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div class="tools-panel" data-pl-panel="rage" hidden>
+      <p class="section-sub" style="margin:0">High intensity — use before a hard block.</p>
+      <div class="playlist-frame-wrap">
+        <iframe title="High energy" src="https://www.youtube.com/embed/56hqRlTWf0E" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div class="tools-panel" data-pl-panel="reset" hidden>
+      <p class="section-sub" style="margin:0">Slow down and recover.</p>
+      <div class="playlist-frame-wrap">
+        <iframe title="Ambient reset" src="https://www.youtube.com/embed/Dx5qFachd3A" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tools-section" id="wake">
+  <div class="section-label">Morning</div>
+  <h2 class="section-title">WAKE RITUAL</h2>
+  <p class="section-sub">Breathe → Affirm → Visualize → Act. Check steps as you go.</p>
+  <div class="tools-card">
+    <ol class="ritual-steps" id="ritualSteps">
+      <li><label><input type="checkbox" data-ritual="breathe" /> <strong>Breathe</strong> — 4 slow breaths, exhale longer than inhale.</label></li>
+      <li><label><input type="checkbox" data-ritual="affirm" /> <strong>Affirm</strong> — one sentence identity (“I show up even when it’s hard”).</label></li>
+      <li><label><input type="checkbox" data-ritual="visualize" /> <strong>Visualize</strong> — 30 seconds seeing yourself finish today’s key task.</label></li>
+      <li><label><input type="checkbox" data-ritual="act" /> <strong>Act</strong> — first physical move inside 60 seconds (water, shoes, one rep).</label></li>
+    </ol>
+    <button type="button" class="btn-primary" id="ritualSave">Save today’s ritual progress</button>
+  </div>
+  <div class="tools-card" style="margin-top:1rem">
+    <div class="result-label">5-second rule</div>
+    <p class="section-sub" style="margin:0">Mel Robbins-style countdown — then move.</p>
+    <div class="five-sec-display" id="fiveSecNum">5</div>
+    <div style="text-align:center">
+      <button type="button" class="btn-primary" id="fiveSecStart">Start</button>
+      <button type="button" class="btn-ghost" id="fiveSecReset">Reset</button>
+    </div>
+  </div>
+  <div class="tools-card" style="margin-top:1rem">
+    <div class="result-label">Cold shower challenge</div>
+    <p class="section-sub" style="margin:0">Log a cold exposure rep for today.</p>
+    <button type="button" class="btn-primary" id="coldShowerLog">I did it today</button>
+    <p class="cta-note" id="coldShowerStreak" style="margin-top:0.75rem">Streak: 0 days</p>
+  </div>
+</section>
+
+<section class="tools-section" id="breath">
+  <div class="section-label">Body</div>
+  <h2 class="section-title">BREATHWORK</h2>
+  <p class="section-sub">Full animated sessions live on <a href="mantras-calm.html" style="color:var(--orange)">Calm + Breath</a> with Box, 4-7-8, Wim Hof-style rounds and session history.</p>
+  <a href="mantras-calm.html" class="btn-primary">Open breath lab</a>
+</section>
+
+<section class="tools-section" id="quizzes">
+  <div class="section-label">Self-discovery</div>
+  <h2 class="section-title">QUIZZES</h2>
+
+  <div class="tools-card" id="gritQuizCard">
+    <div class="result-label">Grit score (10 questions)</div>
+    <p class="section-sub" style="margin:0">Educational reflection — not a clinical diagnosis. Retake monthly to track growth.</p>
+    <div id="gritQuizMount"></div>
+    <div id="gritQuizResult" hidden></div>
+  </div>
+
+  <div class="tools-card" style="margin-top:1rem" id="driveQuizCard">
+    <div class="result-label">What’s killing your drive?</div>
+    <p class="section-sub" style="margin:0">Find your #1 blocker and a simple action plan.</p>
+    <div id="driveQuizMount"></div>
+    <div id="driveQuizResult" hidden></div>
+  </div>
+
+  <div class="tools-card" style="margin-top:1rem" id="motivationQuizCard">
+    <div class="result-label">Personality × motivation match</div>
+    <p class="section-sub" style="margin:0">Purpose, competition, fear, love, or legacy — plus mantra and coach pairing.</p>
+    <div id="motivationQuizMount"></div>
+    <div id="motivationQuizResult" hidden></div>
+  </div>
+</section>
+
+<section class="tools-section" id="coaching">
+  <div class="section-label">Deep coaching</div>
+  <h2 class="section-title">COACHING MODES</h2>
+  <p class="section-sub">Pick a voice. Saved locally.</p>
+  <div class="quiz-options" id="personaPick" style="max-width:none;flex-wrap:wrap">
+    <button type="button" class="quiz-opt" data-persona="drill">Drill Sergeant</button>
+    <button type="button" class="quiz-opt" data-persona="mentor">Wise Mentor</button>
+    <button type="button" class="quiz-opt" data-persona="hype">Hype Friend</button>
+    <button type="button" class="quiz-opt" data-persona="therapist">Therapist</button>
+  </div>
+  <div class="mantra-display" style="margin-top:1rem">
+    <div class="mantra-text" id="personaBlurb">Select a mode.</div>
+    <div class="mantra-sub" id="personaSample">—</div>
+  </div>
+</section>
+
+<section class="tools-section" id="weekly">
+  <div class="section-label">7-day</div>
+  <h2 class="section-title">WEEKLY PROGRAMS</h2>
+  <div class="quiz-options" id="weekProgramPick" style="max-width:none;flex-wrap:wrap">
+    <button type="button" class="quiz-opt" data-week="confidence">Confidence week</button>
+    <button type="button" class="quiz-opt" data-week="discipline">Discipline week</button>
+    <button type="button" class="quiz-opt" data-week="fear">Fear-facing week</button>
+  </div>
+  <div class="tools-card" id="weekProgramUI"></div>
+</section>
+
+<section class="tools-section" id="excuse">
+  <div class="section-label">Reframe</div>
+  <h2 class="section-title">HARD CONVERSATION</h2>
+  <p class="section-sub">Type your excuse. Get a kind dismantle + one action.</p>
+  <textarea id="excuseInput" class="mantra-personal-ta" rows="3" placeholder="I'm too tired…"></textarea>
+  <button type="button" class="btn-primary" id="excuseSubmit">Coach me</button>
+  <div class="tools-card" id="excuseOutput" style="margin-top:1rem;display:none"></div>
+</section>
+
+<section class="tools-section" id="hof">
+  <div class="section-label">Stories</div>
+  <h2 class="section-title">GRIT HALL OF FAME</h2>
+  <div class="quiz-options" id="hofFilter" style="max-width:none;flex-wrap:wrap;margin-bottom:1rem">
+    <button type="button" class="quiz-opt active" data-hof="all">All</button>
+    <button type="button" class="quiz-opt" data-hof="athletes">Athletes</button>
+    <button type="button" class="quiz-opt" data-hof="artists">Artists</button>
+    <button type="button" class="quiz-opt" data-hof="entrepreneurs">Entrepreneurs</button>
+    <button type="button" class="quiz-opt" data-hof="everyday">Everyday heroes</button>
+  </div>
+  <div class="hof-grid" id="hofGrid"></div>
+</section>
+
+<section class="tools-section" id="quotes">
+  <div class="section-label">Words</div>
+  <h2 class="section-title">QUOTE GRAVEYARD VS GYM</h2>
+  <div class="quote-columns">
+    <div class="tools-card">
+      <div class="result-label">Graveyard (passive)</div>
+      <ul class="quote-list" id="quoteGraveyard"></ul>
+    </div>
+    <div class="tools-card">
+      <div class="result-label">Gym (action)</div>
+      <ul class="quote-list" id="quoteGym"></ul>
+    </div>
+  </div>
+</section>
+
+<section class="tools-section" id="onepct">
+  <div class="section-label">Compound</div>
+  <h2 class="section-title">1% BETTER LOG</h2>
+  <p class="section-sub">One tiny improvement today. Chart shows motivational 1% compound curve vs days logged (not a promise of outcomes).</p>
+  <input class="cta-input" type="text" id="onePctInput" placeholder="Today's 1%: e.g. slept 25 min earlier" style="max-width:100%" />
+  <button type="button" class="btn-primary" id="onePctSave" style="margin-top:0.5rem">Log today</button>
+  <svg class="onepct-chart" id="onePctChart" viewBox="0 0 400 160" preserveAspectRatio="none"></svg>
+</section>
+
+<section class="tools-section" id="wall">
+  <div class="section-label">Local only</div>
+  <h2 class="section-title">ACCOUNTABILITY WALL</h2>
+  <p class="section-sub">Posts stay on this device. “Upvotes” are for your own encouragement count.</p>
+  <div class="cta-input-row" style="max-width:none;flex-wrap:wrap">
+    <input class="cta-input" id="wallName" placeholder="Name (optional)" style="flex:1;min-width:120px" />
+    <input class="cta-input" id="wallBody" placeholder="Your commitment…" style="flex:3;min-width:200px" />
+    <button type="button" class="btn-primary" id="wallPost">Post</button>
+  </div>
+  <button type="button" class="btn-ghost" id="wallDemo" style="margin-top:0.5rem">Load demo posts</button>
+  <button type="button" class="btn-ghost" id="wallExport">Export JSON</button>
+  <div id="wallList" style="margin-top:1rem"></div>
+</section>
+
+<section class="tools-section" id="alarm">
+  <div class="section-label">Phone</div>
+  <h2 class="section-title">ALARM REWRITER</h2>
+  <p class="section-sub">Copy a label into your phone’s alarm app (OS does not allow web to edit alarms).</p>
+  <div id="alarmSuggestions"></div>
+  <input class="cta-input" id="alarmCustom" placeholder="Your war cry" style="max-width:100%;margin-top:0.75rem" />
+  <button type="button" class="btn-primary" id="alarmCopy" style="margin-top:0.5rem">Copy custom line</button>
+</section>
+
+<section class="tools-section" id="pledge">
+  <div class="section-label">Habit</div>
+  <h2 class="section-title">ANTI-SNOOZE PLEDGE</h2>
+  <label class="daily-goal-check" style="color:var(--white)">
+    <input type="checkbox" id="pledgeSign" /> I pledge to skip snooze on purpose — starting today.
+  </label>
+  <p class="cta-note" id="pledgeBadge" style="margin-top:0.75rem"></p>
+  <div class="tools-card" style="margin-top:1rem">
+    <div class="result-label">Morning log</div>
+    <label class="daily-goal-check"><input type="radio" name="snooze" value="kept" /> Kept pledge</label>
+    <label class="daily-goal-check"><input type="radio" name="snooze" value="broke" /> Slipped — logging honestly</label>
+    <button type="button" class="btn-primary" id="snoozeLogSave" style="margin-top:0.75rem">Save today</button>
+  </div>
+</section>
+
+<section class="tools-section" id="challenges">
+  <div class="section-label">Programs</div>
+  <h2 class="section-title">GRIT CHALLENGES</h2>
+  <p class="section-sub">7 / 21 / 75-day templates with daily checkboxes. Completion opens a printable certificate.</p>
+  <div class="quiz-options" id="genericChallengePick" style="max-width:none;flex-wrap:wrap">
+    <button type="button" class="quiz-opt" data-days="7">7 days</button>
+    <button type="button" class="quiz-opt" data-days="21">21 days</button>
+    <button type="button" class="quiz-opt" data-days="75">75 days</button>
+  </div>
+  <div id="genericChallengeUI"></div>
+  <div id="certPrintArea" class="cert-print" style="display:none;margin-top:1.5rem">
+    <h3 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:4px">GRIT</h3>
+    <p>Certificate of completion</p>
+    <p id="certName">Challenger</p>
+    <p id="certDays">—</p>
+    <p style="font-size:0.85rem;margin-top:1rem">Built in the reps. Keep going.</p>
+  </div>
+  <button type="button" class="btn-ghost" id="certPrintBtn" style="margin-top:1rem;display:none">Print certificate</button>
+</section>
+
+<section class="tools-section" id="bonus">
+  <div class="section-label">Power</div>
+  <h2 class="section-title">BONUS TOOLS</h2>
+
+  <div class="tools-card">
+    <div class="result-label">Letter to future you</div>
+    <textarea id="futureLetterBody" class="mantra-personal-ta" rows="5" placeholder="Write what you want your future self to remember…"></textarea>
+    <div class="cta-input-row" style="max-width:none;margin-top:0.5rem;flex-wrap:wrap">
+      <input class="cta-input" type="date" id="futureLetterReveal" title="Reveal on" />
+      <button type="button" class="btn-primary" id="futureLetterSave">Save</button>
+    </div>
+    <div id="futureLetterLocked" class="cta-note" style="margin-top:0.5rem;display:none"></div>
+  </div>
+
+  <div class="tools-card" style="margin-top:1rem">
+    <div class="result-label">Failure resume</div>
+    <input class="cta-input" id="failTitle" placeholder="What failed?" style="max-width:100%;margin-bottom:0.5rem" />
+    <textarea id="failLesson" class="mantra-personal-ta" rows="3" placeholder="What did it teach you?"></textarea>
+    <button type="button" class="btn-primary" id="failAdd" style="margin-top:0.5rem">Add entry</button>
+    <ul class="quote-list" id="failList" style="margin-top:1rem;list-style:disc"></ul>
+  </div>
+
+  <div class="tools-card" style="margin-top:1rem">
+    <div class="result-label">You vs past you</div>
+    <ul class="quote-list" id="leaderboardList" style="list-style:none;padding-left:0"></ul>
+  </div>
+
+  <div class="tools-card" style="margin-top:1rem">
+    <div class="result-label">Weekly digest (copy)</div>
+    <button type="button" class="btn-primary" id="digestBuild">Build digest</button>
+    <pre id="digestOut" class="mantra-personal-ta" style="white-space:pre-wrap;font-size:0.8rem;margin-top:0.5rem;display:none"></pre>
+    <button type="button" class="btn-ghost" id="digestCopy" style="margin-top:0.5rem;display:none">Copy</button>
+    <button type="button" class="btn-ghost" id="digestMail" style="margin-top:0.5rem;display:none">Email draft</button>
+
+  <div class="tools-card" style="margin-top:1rem">
+    <div class="result-label">Mirror statement (record + download)</div>
+    <p class="section-sub" style="margin:0">Short clip; download immediately. Not stored long-term.</p>
+    <button type="button" class="btn-primary" id="mirrorStart">Start camera</button>
+    <button type="button" class="btn-ghost" id="mirrorRec" disabled>Record 10s</button>
+    <button type="button" class="btn-ghost" id="mirrorStop" disabled>Stop</button>
+    <video id="mirrorVideo" playsinline muted style="width:100%;max-width:360px;margin-top:0.75rem;border-radius:6px;display:none"></video>
+  </div>
+
+  <div class="tools-card" style="margin-top:1rem">
+    <div class="result-label">Micro-friction</div>
+    <p class="section-sub" style="margin:0">Challenge pages: switching programs in the carousel asks for confirmation so you leave on purpose.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">GRIT</div>
+  <div class="footer-copy">Tools run locally — your data stays in this browser.</div>
+</footer>
+
+<script src="main.js?v=20260514"></script>
+<script src="js/tools-page.js?v=20260514"></script>
+</body>
+</html>

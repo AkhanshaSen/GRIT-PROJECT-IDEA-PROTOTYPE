@@ -18,6 +18,19 @@
 </head>
 <body>
 
+<div class="mood-entry-modal" id="moodEntryModal" role="dialog" aria-modal="true" aria-labelledby="moodEntryTitle" aria-hidden="true">
+  <div class="mood-entry-card">
+    <div class="section-label" id="moodEntryTitle">Today you feel…</div>
+    <p class="mood-entry-sub">We will tune the tone. You can change this anytime tomorrow.</p>
+    <div class="mood-pick-row">
+      <button type="button" class="mood-pick-btn" data-mood-pick="defeated"><span class="mood-emoji">😤</span> Defeated</button>
+      <button type="button" class="mood-pick-btn" data-mood-pick="neutral"><span class="mood-emoji">😐</span> Neutral</button>
+      <button type="button" class="mood-pick-btn" data-mood-pick="ready"><span class="mood-emoji">🔥</span> Ready</button>
+    </div>
+    <button type="button" class="btn-ghost mood-skip">Skip for today</button>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════════
      NAV
 ══════════════════════════════════════ -->
@@ -26,11 +39,18 @@
   <ul class="nav-links">
     <li><a href="#pillars">About</a></li>
     <li><a href="#interests">Find Your Fire</a></li>
+    <li><a href="#daily-grit">Dashboard</a></li>
     <li><a href="#mantras">Mantras</a></li>
     <li><a href="#challenge">Challenges</a></li>
+    <li><a href="tools.html">Tools</a></li>
     <li><a href="faq.html">FAQ</a></li>
     <li><a href="#cta">Start</a></li>
   </ul>
+  <div class="nav-theme-toggle" id="themeToggle" aria-label="Theme">
+    <button type="button" class="theme-chip" data-theme-set="default">Calm</button>
+    <button type="button" class="theme-chip" data-theme-set="dark">Dark</button>
+    <button type="button" class="theme-chip" data-theme-set="war">War</button>
+  </div>
 </nav>
 
 <!-- ══════════════════════════════════════
@@ -85,6 +105,43 @@
           <span class="streak-count" id="streakCount">7 🔥</span>
         </div>
         <div class="streak-dots" id="streakDots"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     DAILY GRIT DASHBOARD
+══════════════════════════════════════ -->
+<section id="daily-grit">
+  <div class="dashboard-inner">
+    <div class="section-label">Daily Grit</div>
+    <h2 class="section-title">TODAY'S<br>MISSION</h2>
+    <p class="section-sub">One card. One focus. Refreshes every day at midnight local time.</p>
+    <div class="dashboard-grid">
+      <div class="dashboard-card mission-card">
+        <div class="result-label">Today's mission</div>
+        <p class="dashboard-mission-text" id="dashboardMission">—</p>
+        <a href="tools.html#playlists" class="btn-ghost" style="margin-top:1rem;display:inline-block">Hype playlists →</a>
+      </div>
+      <div class="dashboard-card">
+        <div class="result-label">Streaks</div>
+        <div class="streak-pair">
+          <div><span class="streak-big" id="dashboardStreakHabits">0</span><span class="streak-caption">days habits complete</span></div>
+          <div><span class="streak-big" id="dashboardStreakGoals">0</span><span class="streak-caption">days goal checked</span></div>
+        </div>
+        <label class="daily-goal-check">
+          <input type="checkbox" id="dailyGoalCheckbox" />
+          <span>I completed today's one non-negotiable goal.</span>
+        </label>
+      </div>
+      <div class="dashboard-card wide">
+        <div class="result-label">Morning check-in</div>
+        <p class="dashboard-prompt">What's your one non-negotiable today?</p>
+        <div class="cta-input-row">
+          <input class="cta-input" type="text" id="nonNegotiableInput" placeholder="e.g. 30 min deep work before noon" />
+          <button type="button" class="btn-primary" id="nonNegotiableSave" style="white-space:nowrap">Save</button>
+        </div>
       </div>
     </div>
   </div>
@@ -265,15 +322,30 @@
   <h2 class="section-title">LIMITLESS<br>MANTRAS</h2>
   <p class="section-sub">A mantra a day keeps the doubt away. Hit refresh for your next dose of limitless energy.</p>
 
+  <div class="mantra-cat-row" id="mantraCategoryChips">
+    <button type="button" class="mantra-chip active" data-mantra-cat="all">All</button>
+    <button type="button" class="mantra-chip" data-mantra-cat="resilience">Resilience</button>
+    <button type="button" class="mantra-chip" data-mantra-cat="discipline">Discipline</button>
+    <button type="button" class="mantra-chip" data-mantra-cat="abundance">Abundance</button>
+    <button type="button" class="mantra-chip" data-mantra-cat="self-worth">Self-worth</button>
+  </div>
+
   <div class="mantra-display">
     <div class="mantra-text" id="mantraText">YOUR ONLY COMPETITION IS WHO YOU WERE YESTERDAY.</div>
     <div class="mantra-sub"  id="mantraSub">On days it feels impossible — this is the truth.</div>
   </div>
 
+  <div class="mantra-personal-block">
+    <label class="result-label" for="mantraPersonalInput">Make it mine</label>
+    <textarea id="mantraPersonalInput" class="mantra-personal-ta" rows="2" placeholder="Edit this mantra in your own words…"></textarea>
+    <button type="button" class="btn-primary" onclick="savePersonalMantra()">Save my version</button>
+  </div>
+
   <div class="mantra-controls">
     <button class="btn-primary" onclick="nextMantra()">New Mantra 🔥</button>
     <button class="btn-ghost"   onclick="copyMantra()">Copy It</button>
-    <a href="mantras-calm.html" class="btn-ghost">Explore Mantras</a>
+    <button class="btn-ghost" type="button" onclick="downloadMantraWallpaper()">Wallpaper PNG</button>
+    <a href="mantras-calm.html" class="btn-ghost">Calm + Breath</a>
   </div>
 
   <div class="mantra-grid">
@@ -461,7 +533,7 @@
 </footer>
 
 <!-- JavaScript -->
-<script src="main.js?v=20260409d"></script>
+<script src="main.js?v=20260514"></script>
 
 </body>
 </html>

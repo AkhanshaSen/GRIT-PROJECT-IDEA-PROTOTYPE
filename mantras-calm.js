@@ -63,7 +63,83 @@
 })();
 
 (function initCalmBreathing() {
-  const trigger = document.querySelector('.breathe-trigger');
+  const BREATH_KEY = 'grit.breathSessions';
+  function readHist() {
+    try {
+      const x = JSON.parse(localStorage.getItem(BREATH_KEY) || '[]');
+      return Array.isArray(x) ? x : [];
+    } catch {
+      return [];
+    }
+  }
+  function pushHist(entry) {
+    const arr = readHist();
+    arr.push(entry);
+    localStorage.setItem(BREATH_KEY, JSON.stringify(arr.slice(-50)));
+    renderHist();
+  }
+  function isoLocal() {
+    const d = new Date();
+    const o = d.getTimezoneOffset() * 60000;
+    return new Date(d - o).toISOString().slice(0, 10);
+  }
+  function renderHist() {
+    const ul = document.getElementById('breathHistoryList');
+    if (!ul) return;
+    const rows = readHist().slice().reverse();
+    ul.innerHTML = rows.length
+      ? rows
+          .map(r => {
+            const iso = r.iso || r.date || '—';
+            const label =
+              r.pattern === 'calm'
+                ? 'Calm 4-6'
+                : r.pattern === 'box'
+                  ? 'Box 4-4-4-4'
+                  : r.pattern === 'n478'
+                    ? '4-7-8'
+                    : r.pattern === 'wim'
+                      ? 'Wim Hof style'
+                      : r.pattern;
+            const dur = `${r.durationSec}s`;
+            return (
+              `<li class="breath-hist-row"><span class="breath-hist-date">${iso}</span>` +
+              `<span class="breath-hist-pattern">${label}</span>` +
+              `<span class="breath-hist-dur">${dur}</span></li>`
+            );
+          })
+          .join('')
+      : '<li class="breath-hist-empty">No sessions yet. Pick a pattern above.</li>';
+  }
+  renderHist();
+
+  const PATTERNS = {
+    calm: { phases: [{ label: 'INHALE', seconds: 4 }, { label: 'EXHALE', seconds: 6 }] },
+    box: {
+      phases: [
+        { label: 'INHALE', seconds: 4 },
+        { label: 'HOLD', seconds: 4 },
+        { label: 'EXHALE', seconds: 4 },
+        { label: 'HOLD', seconds: 4 }
+      ]
+    },
+    n478: {
+      phases: [
+        { label: 'INHALE', seconds: 4 },
+        { label: 'HOLD', seconds: 7 },
+        { label: 'EXHALE', seconds: 8 }
+      ]
+    },
+    wim: {
+      phases: [
+        { label: 'POWER', seconds: 30, power: true },
+        { label: 'EXHALE & HOLD', seconds: 15 }
+      ],
+      repeat: 3
+    }
+  };
+
+  const triggers = document.querySelectorAll('.breathe-trigger');
   const panel = document.getElementById('breathPanel');
   const stopBtn = document.getElementById('breathStopBtn');
   const phaseEl = document.getElementById('breathPhase');
@@ -71,7 +147,7 @@
   const cycleEl = document.getElementById('breathCycle');
   const elapsedEl = document.getElementById('breathElapsed');
 
-  if (!trigger || !panel || !stopBtn || !phaseEl || !countEl || !cycleEl || !elapsedEl) return;
+  if (!triggers.length || !panel || !stopBtn || !phaseEl || !countEl || !cycleEl || !elapsedEl) return;
 
   let audioCtx = null;
   let gainNode = null;
@@ -89,31 +165,47 @@
   let secondTimer = null;
   let prepTimer = null;
 
-  // 4s inhale, 6s exhale
-  const phases = [
-    { label: 'INHALE', seconds: 4 },
-    { label: 'EXHALE', seconds: 6 }
-  ];
+  let patternKey = 'calm';
+  let phases = PATTERNS.calm.phases;
+  let outerLeft = 1;
   let phaseIdx = 0;
   let secondsLeft = phases[0].seconds;
   let cycle = 1;
   let elapsed = 0;
+  let sessionStart = 0;
+  let powerToggle = false;
 
   function pad2(n) {
     return n < 10 ? `0${n}` : String(n);
   }
 
+  function applyPhaseVisual() {
+    const ph = phases[phaseIdx];
+    panel.classList.remove('inhale', 'exhale', 'hold', 'power-in', 'power-out');
+    if (ph.power) {
+      panel.classList.add(powerToggle ? 'power-in' : 'power-out');
+      return;
+    }
+    if (ph.label === 'INHALE') panel.classList.add('inhale');
+    else if (ph.label === 'HOLD') panel.classList.add('hold');
+    else panel.classList.add('exhale');
+  }
+
   function render() {
-    const label = phases[phaseIdx].label;
-    phaseEl.textContent = label === 'INHALE' ? 'INHALE →' : 'EXHALE ←';
+    const ph = phases[phaseIdx];
+    let labelText = ph.label;
+    if (ph.label === 'INHALE') labelText = 'INHALE →';
+    else if (ph.label === 'EXHALE') labelText = 'EXHALE ←';
+    else if (ph.label === 'HOLD') labelText = 'HOLD ·';
+    else if (ph.label === 'EXHALE & HOLD') labelText = 'EXHALE · HOLD';
+    else if (ph.label === 'POWER') labelText = powerToggle ? 'POWER IN' : 'POWER OUT';
+    phaseEl.textContent = labelText;
     countEl.textContent = String(secondsLeft);
-    cycleEl.textContent = String(cycle);
+    cycleEl.textContent = `${cycle} · r${outerLeft}`;
     const mm = Math.floor(elapsed / 60);
     const ss = elapsed % 60;
     elapsedEl.textContent = `${pad2(mm)}:${pad2(ss)}`;
-
-    panel.classList.toggle('inhale', label === 'INHALE');
-    panel.classList.toggle('exhale', label === 'EXHALE');
+    applyPhaseVisual();
   }
 
   function stopAudio() {
@@ -151,8 +243,13 @@
   }
 
   function stopSession() {
+    if (sessionStart) {
+      const sec = Math.max(1, Math.round((Date.now() - sessionStart) / 1000));
+      pushHist({ iso: isoLocal(), pattern: patternKey, durationSec: sec });
+      sessionStart = 0;
+    }
     stopAudio();
-    panel.classList.remove('open');
+    panel.classList.remove('open', 'inhale', 'exhale', 'hold', 'power-in', 'power-out');
     panel.setAttribute('aria-hidden', 'true');
   }
 
@@ -187,7 +284,6 @@
     droneB.start();
     droneC.start();
 
-    // Soft noise bed (serene air feel).
     const noiseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
     const data = noiseBuffer.getChannelData(0);
     for (let i = 0; i < data.length; i++) {
@@ -206,7 +302,6 @@
     noiseGain.connect(gainNode);
     noiseSource.start();
 
-    // Gentle pulse for breathing rhythm.
     lfo = audioCtx.createOscillator();
     lfoGain = audioCtx.createGain();
     lfo.frequency.value = 0.06;
@@ -217,7 +312,6 @@
   }
 
   async function startAudio() {
-    // Preferred: user-provided serene soundtrack file.
     sereneAudio = new Audio('assets/serene-horizons.mp3');
     sereneAudio.loop = true;
     sereneAudio.volume = 0.28;
@@ -225,28 +319,31 @@
     try {
       await sereneAudio.play();
     } catch {
-      // Fallback to generated ambient if browser blocks/asset unavailable.
       sereneAudio = null;
       startSynthAudio();
     }
   }
 
-  function startSession() {
+  function startSession(key) {
     stopAudio();
+    patternKey = key && PATTERNS[key] ? key : 'calm';
+    const def = PATTERNS[patternKey];
+    phases = def.phases;
+    outerLeft = def.repeat != null ? def.repeat : 999999;
 
     phaseIdx = 0;
     secondsLeft = phases[0].seconds;
     cycle = 1;
     elapsed = 0;
+    powerToggle = false;
+    sessionStart = Date.now();
 
     panel.classList.add('open');
     panel.setAttribute('aria-hidden', 'false');
-    panel.classList.remove('inhale');
-    panel.classList.remove('exhale');
+    panel.classList.remove('inhale', 'exhale', 'hold', 'power-in', 'power-out');
 
-    // Intro context before guided breathing starts.
     let prep = 5;
-    phaseEl.textContent = 'Relax. Focus on the screen and sync with your breath.';
+    phaseEl.textContent = 'Relax. Sync with the circle.';
     countEl.textContent = String(prep);
     cycleEl.textContent = '0';
     elapsedEl.textContent = '00:00';
@@ -258,16 +355,31 @@
         prepTimer = null;
 
         render();
-        panel.classList.add('inhale');
         startAudio();
 
         tickTimer = setInterval(() => {
+          const ph = phases[phaseIdx];
+          if (ph.power) powerToggle = !powerToggle;
+
           secondsLeft -= 1;
-          if (secondsLeft <= 0) {
-            if (phaseIdx === 1) cycle += 1;
-            phaseIdx = (phaseIdx + 1) % phases.length;
-            secondsLeft = phases[phaseIdx].seconds;
+          if (secondsLeft > 0) {
+            render();
+            return;
           }
+
+          if (phaseIdx >= phases.length - 1) {
+            outerLeft -= 1;
+            cycle += 1;
+            if (outerLeft <= 0) {
+              stopSession();
+              return;
+            }
+            phaseIdx = 0;
+          } else {
+            phaseIdx += 1;
+          }
+          secondsLeft = phases[phaseIdx].seconds;
+          powerToggle = false;
           render();
         }, 1000);
 
@@ -281,12 +393,17 @@
     }, 1000);
   }
 
-  trigger.addEventListener('click', startSession);
+  triggers.forEach(t => {
+    t.addEventListener('click', () => {
+      const k = t.getAttribute('data-pattern') || 'calm';
+      startSession(k);
+    });
+  });
   stopBtn.addEventListener('click', stopSession);
-  panel.addEventListener('click', (e) => {
+  panel.addEventListener('click', e => {
     if (e.target === panel) stopSession();
   });
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', e => {
     if (e.key === 'Escape') stopSession();
   });
 })();
